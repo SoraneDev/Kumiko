@@ -23,7 +23,7 @@ namespace Kumiko
         }
 
 
-        internal static bool Has(this InteractionFlags flags, InteractionFlags flag)
+        internal static bool HasAny(this InteractionFlags flags, InteractionFlags flag)
         {
             return (flags & flag) != 0;
         }

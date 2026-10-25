@@ -30,8 +30,9 @@ namespace Kumiko.R3
 
 
         /// <summary>
-        /// 決定入力がGateを通過したときに通知されるObservableを取得する。
+        /// 決定入力がGateを通過したことを、Observableとして取得する。
         /// </summary>
+        [Obsolete]
         public static Observable<Unit> OnConfirmAsObservable(this KumikoButton button)
         {
             return Observable.Create<Unit>(observer =>
@@ -45,9 +46,40 @@ namespace Kumiko.R3
 
 
         /// <summary>
-        /// 決定入力がGateに拒否されたときに通知されるObservableを取得する。
+        /// 決定入力がGateを通過したことを、Observableとして取得する。
         /// </summary>
+        public static Observable<Unit> ConfirmAsObservable(this KumikoButton button)
+        {
+            return Observable.Create<Unit>(observer =>
+            {
+                Action handler = () => observer.OnNext(Unit.Default);
+                button.Confirmed += handler;
+
+                return Disposable.Create(() => button.Confirmed -= handler);
+            });
+        }
+
+
+        /// <summary>
+        /// 決定入力がGateに拒否されたことを、Observableとして取得する。
+        /// </summary>
+        [Obsolete]
         public static Observable<Unit> OnConfirmRejectedAsObservable(this KumikoButton button)
+        {
+            return Observable.Create<Unit>(observer =>
+            {
+                Action handler = () => observer.OnNext(Unit.Default);
+                button.ConfirmRejected += handler;
+
+                return Disposable.Create(() => button.ConfirmRejected -= handler);
+            });
+        }
+
+
+        /// <summary>
+        /// 決定入力がGateに拒否されたことを、Observableとして取得する。
+        /// </summary>
+        public static Observable<Unit> ConfirmRejectedAsObservable(this KumikoButton button)
         {
             return Observable.Create<Unit>(observer =>
             {

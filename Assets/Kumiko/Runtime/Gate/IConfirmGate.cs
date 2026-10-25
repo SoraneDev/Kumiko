@@ -11,17 +11,18 @@ namespace Kumiko
 
 
         /// <summary>
-        /// Gateがアクティブかどうかを取得する。
+        /// Gateが有効かどうかを取得する。
         /// </summary>
-        /// <returns>アクティブ状態を返す。</returns>
+        /// <returns>有効な場合はtrue、無効な場合はfalseを返す。</returns>
+        /// <remarks>無効なGateは、Passedとして扱われる。</remarks>
         bool IsActive();
 
 
         /// <summary>
         /// 決定入力を通過させてよいかを評価する。
         /// </summary>
-        /// <remarks>内部状態を変更しない。同じ状態では、何度呼んでも同じ結果を返す。</remarks>
         /// <returns>通過可能ならPassed、判定途中ならPending、通過拒否ならRejectedを返す。</returns>
+        /// <remarks>内部状態を変更しない。同じ状態では、何度呼んでも同じ結果を返す。</remarks>
         ConfirmGateResult Evaluate();
 
 

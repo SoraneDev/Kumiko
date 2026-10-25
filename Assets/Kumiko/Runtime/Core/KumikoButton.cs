@@ -6,9 +6,10 @@ namespace Kumiko
 {
     /// <summary>
     /// UIをインタラクション可能なボタンにする。
-    /// Gateモジュールを同じゲームオブジェクトにアタッチすることでダブルクリックや
-    /// クールダウンなどの入力制御の機能を付与できる。
+    /// Gateを同じGameObjectにアタッチすると、ダブルクリックや
+    /// クールダウンなどの通過条件を決定入力に付与できる。
     /// </summary>
+    /// <remarks>Gateは、Awakeの時点でアタッチされているものだけが対象になる。</remarks>
     [AddComponentMenu("Kumiko/KumikoButton")]
     public sealed class KumikoButton : KumikoElement
     {
@@ -33,8 +34,6 @@ namespace Kumiko
         {
             base.Awake();
 
-            // 自身にアタッチされているGateをすべて取得する。
-            // AddComponentなどで途中で追加されたものは対象外。
             _confirmGateChain.Collect(gameObject);
         }
 
@@ -48,6 +47,7 @@ namespace Kumiko
         }
 
 
+        /// <inheritdoc/>
         protected override void OnConfirmInput()
         {
             Confirm();

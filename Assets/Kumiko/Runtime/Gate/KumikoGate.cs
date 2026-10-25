@@ -4,11 +4,16 @@ using UnityEngine;
 namespace Kumiko
 {
     /// <summary>
-    /// Gateモジュールの基底クラス。
+    /// Gateの基底クラス。
     /// </summary>
+    /// <remarks>無効になると、ResetStateで内部状態を初期化する。</remarks>
     [RequireComponent(typeof(KumikoButton))]
     public abstract class KumikoGate : KumikoModule, IConfirmGate
     {
+        /// <inheritdoc />
+        public abstract ConfirmGateStage Stage { get; }
+
+
         protected override void OnDisable()
         {
             base.OnDisable();
@@ -18,19 +23,15 @@ namespace Kumiko
         }
 
 
-        /// <inheritdoc/>
-        public abstract ConfirmGateStage Stage { get; }
-
-
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public abstract ConfirmGateResult Evaluate();
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public abstract void Commit(ConfirmGateResult ownResult, ConfirmGateResult finalResult);
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public abstract void ResetState();
     }
 }

@@ -4,31 +4,34 @@ using UnityEngine;
 
 namespace Kumiko.Editor
 {
+    /// <summary>
+    /// エディターのCreateMenuを拡張する。
+    /// </summary>
     public static class KumikoCreateMenu
     {
-        private const string KumikoButtonPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Button.prefab";
-        private const string SliderPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Slider.prefab";
-        private const string TogglePath = "Packages/com.sorane.kumiko/Editor/Prefabs/Toggle.prefab";
+        private const string ButtonPrefabPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Button.prefab";
+        private const string SliderPrefabPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Slider.prefab";
+        private const string TogglePrefabPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Toggle.prefab";
 
 
-        [MenuItem("GameObject/Kumiko/Button", false, 10)]
+        [MenuItem("GameObject/Kumiko/Button", false, 0)]
         private static void CreateButton(MenuCommand command)
         {
-            Create(command, KumikoButtonPath);
+            Create(command, ButtonPrefabPath);
         }
 
 
-        [MenuItem("GameObject/Kumiko/Slider", false, 11)]
+        [MenuItem("GameObject/Kumiko/Slider", false, 1)]
         private static void CreateSlider(MenuCommand command)
         {
-            Create(command, SliderPath);
+            Create(command, SliderPrefabPath);
         }
 
 
-        [MenuItem("GameObject/Kumiko/Toggle", false, 12)]
+        [MenuItem("GameObject/Kumiko/Toggle", false, 2)]
         private static void CreateToggle(MenuCommand command)
         {
-            Create(command, TogglePath);
+            Create(command, TogglePrefabPath);
         }
 
 
@@ -46,13 +49,12 @@ namespace Kumiko.Editor
 
             var parent = command.context as GameObject;
 
-            // ルートで生成する場合はCanvasを検索
+            // ルートで生成する場合は、シーン内のCanvasを親にする。
             if (parent == null)
             {
                 var canvas = Object.FindFirstObjectByType<Canvas>();
 
-                if (canvas != null)
-                    parent = canvas.gameObject;
+                if (canvas != null) parent = canvas.gameObject;
             }
 
             GameObjectUtility.SetParentAndAlign(instance, parent);

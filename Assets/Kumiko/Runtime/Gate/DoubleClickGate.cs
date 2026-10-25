@@ -10,7 +10,8 @@ namespace Kumiko
     [AddComponentMenu("Kumiko/DoubleClickGate")]
     public sealed class DoubleClickGate : KumikoGate
     {
-        [SerializeField, Min(0f), Tooltip("秒")] private float _doubleClickInterval = 0.4f;
+        [SerializeField, Min(0f), Tooltip("1回目から2回目の入力までに許容する秒数")]
+        private float _doubleClickInterval = 0.4f;
 
 
         private float _firstClickTime;

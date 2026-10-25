@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 namespace Kumiko
@@ -10,7 +11,9 @@ namespace Kumiko
     [AddComponentMenu("Kumiko/CooldownGate")]
     public sealed class CooldownGate : KumikoGate
     {
-        [SerializeField, Min(0f), Tooltip("秒")] private float _cooldownTime = 1f;
+        [FormerlySerializedAs("_cooldownTime")]
+        [SerializeField, Min(0f), Tooltip("決定後、次の決定を受け付けるまでの秒数")]
+        private float _cooldownDuration = 1f;
 
 
         private float _nextAvailableTime;
@@ -33,7 +36,7 @@ namespace Kumiko
             // 決定が確定したときだけ、クールダウンを始める。
             if (finalResult != ConfirmGateResult.Passed) return;
 
-            _nextAvailableTime = Time.unscaledTime + _cooldownTime;
+            _nextAvailableTime = Time.unscaledTime + _cooldownDuration;
         }
 
 

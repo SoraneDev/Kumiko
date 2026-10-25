@@ -2,7 +2,9 @@
     "name": "Kumiko.Editor",
     "rootNamespace": "Kumiko.Editor",
     "references": [],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

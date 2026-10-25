@@ -1,7 +1,7 @@
 namespace Kumiko
 {
     /// <summary>
-    /// 最終結果に採用する優先順位を表す。
+    /// Gateの評価段階を表す。値が小さい段階の結果を最終結果として優先する。
     /// </summary>
     public enum ConfirmGateStage
     {

@@ -5,7 +5,8 @@ using UnityEngine.UI;
 namespace Kumiko
 {
     /// <summary>
-    /// SelectableとKumikoElementの操作可否を同期させる。
+    /// KumikoElementの実効的な操作可否をSelectableへ反映する。
+    /// SelectableのNavigationとTransitionは使わないため、無効にする。
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Selectable))]
@@ -29,8 +30,6 @@ namespace Kumiko
             base.Awake();
 
             DisableSelectableSettings();
-
-            TargetSelectable.interactable = Element.Interactable;
         }
 
 
@@ -81,6 +80,8 @@ namespace Kumiko
 
         protected override void Reset()
         {
+            base.Reset();
+
             DisableSelectableSettings();
         }
 

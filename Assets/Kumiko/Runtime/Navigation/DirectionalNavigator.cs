@@ -7,6 +7,7 @@ namespace Kumiko
     /// <summary>
     /// UIの方向入力を受けたとき、設定した要素へ選択を移す。
     /// </summary>
+    /// <remarks>遷移先が未設定、非アクティブ、または操作不可のときは選択を移さない。</remarks>
     [DisallowMultipleComponent]
     [AddComponentMenu("Kumiko/DirectionalNavigator")]
     public sealed class DirectionalNavigator : KumikoModule, IMoveHandler

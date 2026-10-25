@@ -9,15 +9,15 @@ namespace Kumiko
     /// <summary>
     /// UIをインタラクション可能にする。
     /// 継承してボタンなどの機能を追加できる。
-    /// またモジュールなどを同じゲームオブジェクトにアタッチすることで機能の拡張が可能。
+    /// また、モジュールを同じGameObjectにアタッチして機能を拡張できる。
     /// </summary>
     [SelectionBase]
     [DisallowMultipleComponent]
     [RequireComponent(typeof(RectTransform))]
     [AddComponentMenu("Kumiko/KumikoElement")]
     public class KumikoElement : UIBehaviour, IPointerEnterHandler, IPointerExitHandler,
-    IPointerDownHandler, IPointerUpHandler, IPointerClickHandler,
-    ISelectHandler, IDeselectHandler, ISubmitHandler, ICancelHandler, IMoveHandler
+        IPointerDownHandler, IPointerUpHandler, IPointerClickHandler,
+        ISelectHandler, IDeselectHandler, ISubmitHandler, ICancelHandler, IMoveHandler
     {
         [SerializeField] private bool _interactable = true;
 
@@ -33,14 +33,6 @@ namespace Kumiko
 
         /// <summary>
         /// 表示状態が変化したときに通知される。
-        /// 内部用。利用側の例外の影響を受けないように、先に通知される。
-        /// </summary>
-        /// <inheritdoc cref="KumikoElement.StateChanged"/>
-        internal event Action<InteractionState> InternalStateChanged;
-
-
-        /// <summary>
-        /// 表示状態が変化したときに通知される。
         /// </summary>
         /// <remarks>
         /// 実効的な操作可能状態、ポインタ・選択の入力、入力種別の切り替えで変化する。
@@ -51,7 +43,16 @@ namespace Kumiko
         public event Action<InteractionState> StateChanged;
 
 
-        /// <summary>現在のUI要素の表示状態</summary>
+        /// <summary>
+        /// 表示状態が変化したときに通知される。
+        /// 内部用。利用側の例外の影響を受けないように、先に通知される。
+        /// </summary>
+        /// <inheritdoc cref="StateChanged"/>
+        internal event Action<InteractionState> InternalStateChanged;
+
+
+
+        /// <summary>現在のUI要素の表示状態。</summary>
         public InteractionState State { get; private set; }
 
 
@@ -75,7 +76,7 @@ namespace Kumiko
         {
             base.OnEnable();
 
-            _groupsAllowInteraction = ParentGroupAllowsInteraction();
+            _groupsAllowInteraction = CanvasGroupsAllowInteraction();
 
             // 選択されたままだった場合は、フォーカスを復元する。
             if (EventSystem.current != null && EventSystem.current.currentSelectedGameObject == gameObject)
@@ -96,7 +97,7 @@ namespace Kumiko
             InputModalityTracker.Current.InternalModalityChanged -= OnModalityChanged;
 
             // 入力由来のフラグだけ解除する。Disabledは操作可否から決まるので維持する。
-            _flags &= ~InputFlags;
+            _flags = _flags.Remove(InputFlags);
             RefreshState();
         }
 
@@ -105,7 +106,7 @@ namespace Kumiko
         {
             base.OnCanvasGroupChanged();
 
-            _groupsAllowInteraction = ParentGroupAllowsInteraction();
+            _groupsAllowInteraction = CanvasGroupsAllowInteraction();
             SyncDisabledFlag();
             DeselectIfDisabled();
         }
@@ -136,7 +137,7 @@ namespace Kumiko
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            // ポインタが動いていないのにUIが動いて発火した場合は、ユーザーの操作ではないため報告しない。
+            // ポインタが動いていないのにUIが動いて発火した場合は、ユーザーの操作ではないため入力種別を報告しない。
             if (eventData.delta.sqrMagnitude > 0f)
             {
                 InputModalityTracker.Current.Report(PointerKindClassifier.Classify(eventData));
@@ -224,9 +225,9 @@ namespace Kumiko
                 _flags = _flags.Add(InteractionFlags.Pressed);
                 RefreshState();
             }
-            // 購読側の例外で、押下が残らないようにする。
             finally
             {
+                // 購読側の例外で、押下が残らないようにする。
                 _flags = _flags.Remove(InteractionFlags.Pressed);
                 RefreshState();
             }
@@ -322,7 +323,7 @@ namespace Kumiko
         }
 
 
-        private bool ParentGroupAllowsInteraction()
+        private bool CanvasGroupsAllowInteraction()
         {
             Transform current = transform;
 

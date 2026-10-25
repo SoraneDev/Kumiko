@@ -5,14 +5,10 @@ using UnityEngine;
 namespace Kumiko
 {
     /// <summary>
-    /// 入力種別の保持と固定を管理する。
+    /// 直近に検知した入力種別を保持する。利用側から入力種別を固定することもできる。
     /// </summary>
     public sealed class InputModalityTracker
     {
-        /// <summary>現在のインスタンス。再生を開始するたびに作り直される。</summary>
-        public static InputModalityTracker Current { get; private set; } = new();
-
-
         private InputModality _detected;
         private InputModality? _locked;
 
@@ -32,8 +28,12 @@ namespace Kumiko
         /// 入力種別が変化したときに通知される。
         /// 内部用。利用側の例外の影響を受けないように、先に通知される。
         /// </summary>
-        /// <inheritdoc cref="InputModalityTracker.ModalityChanged"/>
+        /// <inheritdoc cref="InputModalityTracker.ModalityChanged" />
         internal event Action<InputModality> InternalModalityChanged;
+
+
+        /// <summary>現在のインスタンス。再生を開始するたびに作り直される。</summary>
+        public static InputModalityTracker Current { get; private set; } = new();
 
 
         /// <summary>現在の入力種別。</summary>
@@ -51,6 +51,7 @@ namespace Kumiko
         /// <summary>
         /// 入力種別を固定する。
         /// </summary>
+        /// <param name="modality">固定する入力種別。</param>
         /// <remarks>自動検知は裏で続くが、解除するまで反映しない。</remarks>
         public void Lock(InputModality modality)
         {

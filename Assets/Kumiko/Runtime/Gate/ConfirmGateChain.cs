@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Kumiko
 {
     /// <summary>
-    /// 評価するGateを管理する。
+    /// Gateをまとめて評価し、決定入力の最終結果を決める。
     /// </summary>
     internal sealed class ConfirmGateChain
     {
@@ -15,7 +15,8 @@ namespace Kumiko
 
 
         /// <summary>
-        /// 対象のGameObjectからIConfirmGateを取得し、Stageの昇順でソートして格納する。
+        /// 対象のGameObjectからIConfirmGateを取得し、Stageの昇順に並べて格納する。
+        /// 同じStageでは取得した順を保つ。
         /// </summary>
         /// <param name="owner">Gateを持つ対象のGameObject。</param>
         internal void Collect(GameObject owner)
@@ -28,7 +29,7 @@ namespace Kumiko
         /// <summary>
         /// すべてのGateを評価して最終結果を決め、各Gateの内部状態を更新する。
         /// </summary>
-        /// <returns>すべてのGateを通過した場合はPassedを返す。そうでない場合はGateが出す結果を返す。</returns>
+        /// <returns>すべてのGateを通過した場合はPassed、そうでない場合は最初にPassed以外を返したGateの結果を返す。</returns>
         internal ConfirmGateResult Resolve()
         {
             ConfirmGateResult finalResult = ConfirmGateResult.Passed;
