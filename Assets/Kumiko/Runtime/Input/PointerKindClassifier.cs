@@ -5,14 +5,14 @@ using UnityEngine.InputSystem.UI;
 namespace Kumiko
 {
     /// <summary>
-    /// PointerEventDataの入力をタッチとポインタに分類するクラス
+    /// PointerEventDataの入力をタッチとポインタに分類する。
     /// </summary>
     internal static class PointerKindClassifier
     {
         /// <summary>
         /// PointerEventDataの入力をタッチとポインタに分類する。
         /// </summary>
-        /// <param name="eventData">分類したいPointerEventData</param>
+        /// <param name="eventData">分類したいPointerEventData。</param>
         /// <returns>入力種別を返す。</returns>
         internal static InputModality Classify(PointerEventData eventData)
         {

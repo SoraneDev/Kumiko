@@ -6,18 +6,18 @@ using UnityEngine;
 namespace Kumiko
 {
     /// <summary>
-    /// 評価するGateを管理するクラス
+    /// 評価するGateを管理する。
     /// </summary>
     internal sealed class ConfirmGateChain
     {
         private IConfirmGate[] _gates = Array.Empty<IConfirmGate>();
         private ConfirmGateResult[] _ownResults = Array.Empty<ConfirmGateResult>();
 
-        
+
         /// <summary>
         /// 対象のGameObjectからIConfirmGateを取得し、Stageの昇順でソートして格納する。
         /// </summary>
-        /// <param name="owner">Gateを持つ対象のGameObject</param>
+        /// <param name="owner">Gateを持つ対象のGameObject。</param>
         internal void Collect(GameObject owner)
         {
             _gates = owner.GetComponents<IConfirmGate>().OrderBy(gate => gate.Stage).ToArray();
@@ -31,7 +31,7 @@ namespace Kumiko
         /// <returns>すべてのGateを通過した場合はPassedを返す。そうでない場合はGateが出す結果を返す。</returns>
         internal ConfirmGateResult Resolve()
         {
-            var finalResult = ConfirmGateResult.Passed;
+            ConfirmGateResult finalResult = ConfirmGateResult.Passed;
 
             // 判定: 状態を変えずに、すべてのGateを評価する。
             // 最終結果は、並び順で最初にPassed以外を返したGateの結果にする。
@@ -57,7 +57,7 @@ namespace Kumiko
         /// </summary>
         internal void ResetAll()
         {
-            foreach (var gate in _gates) gate.ResetState();
+            foreach (IConfirmGate gate in _gates) gate.ResetState();
         }
     }
 }

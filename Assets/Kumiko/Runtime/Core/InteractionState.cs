@@ -1,13 +1,13 @@
 namespace Kumiko
 {
     /// <summary>
-    /// 表示するインタラクションの状態を表す列挙型。
+    /// 表示するインタラクションの状態を表す。
     /// 常に1つだけが成立する。
     /// </summary>
     public enum InteractionState
     {
         Normal,
-        
+
         /// <summary>マウスなどのポインタが重なっている。入力種別がPointerのときだけ表示する。</summary>
         Hovered,
 

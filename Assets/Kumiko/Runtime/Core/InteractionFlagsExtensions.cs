@@ -1,17 +1,31 @@
 namespace Kumiko
 {
     /// <summary>
-    /// InteractionFlagsの拡張メソッドを提供する静的クラス
+    /// InteractionFlagsの拡張メソッドを提供する。
     /// </summary>
     internal static class InteractionFlagsExtensions
     {
-        internal static InteractionFlags Add(this InteractionFlags flags, InteractionFlags flag) => flags | flag;
+        internal static InteractionFlags Add(this InteractionFlags flags, InteractionFlags flag)
+        {
+            return flags | flag;
+        }
 
-        internal static InteractionFlags Remove(this InteractionFlags flags, InteractionFlags flag) => flags & ~flag;
 
-        internal static InteractionFlags Set(this InteractionFlags flags, InteractionFlags flag, bool isOn) =>
-            isOn ? flags | flag : flags & ~flag;
+        internal static InteractionFlags Remove(this InteractionFlags flags, InteractionFlags flag)
+        {
+            return flags & ~flag;
+        }
 
-        internal static bool Has(this InteractionFlags flags, InteractionFlags flag) => (flags & flag) != 0;
+
+        internal static InteractionFlags Set(this InteractionFlags flags, InteractionFlags flag, bool isOn)
+        {
+            return isOn ? flags | flag : flags & ~flag;
+        }
+
+
+        internal static bool Has(this InteractionFlags flags, InteractionFlags flag)
+        {
+            return (flags & flag) != 0;
+        }
     }
 }

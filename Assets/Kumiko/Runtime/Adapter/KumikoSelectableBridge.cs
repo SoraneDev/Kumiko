@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Kumiko
 {
     /// <summary>
-    /// SelectableとKumikoElementの操作可否を同期させるためのクラス
+    /// SelectableとKumikoElementの操作可否を同期させる。
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Selectable))]
@@ -27,9 +27,9 @@ namespace Kumiko
         protected override void Awake()
         {
             base.Awake();
-            
+
             DisableSelectableSettings();
-            
+
             TargetSelectable.interactable = Element.Interactable;
         }
 
@@ -37,7 +37,7 @@ namespace Kumiko
         protected override void OnEnable()
         {
             base.OnEnable();
-            
+
             Element.InternalStateChanged += OnStateChanged;
 
             // 無効の間に変化した状態を反映する。
@@ -47,40 +47,43 @@ namespace Kumiko
 
         protected override void OnDisable()
         {
-            base.OnDisable(); 
-            
+            base.OnDisable();
+
             Element.InternalStateChanged -= OnStateChanged;
         }
-        
-        
-        private void OnStateChanged(InteractionState state) => ApplyState(state);
-        
-        
+
+
+        private void OnStateChanged(InteractionState state)
+        {
+            ApplyState(state);
+        }
+
+
         private void ApplyState(InteractionState state)
         {
             TargetSelectable.interactable = state != InteractionState.Disabled;
         }
-    
-    
+
+
         // 本ライブラリではSelectableのNavigation機能とTransition機能は
         // 使用しない設計のため機能をNoneにする。
         private void DisableSelectableSettings()
         {
-            var navigation = TargetSelectable.navigation;
+            Navigation navigation = TargetSelectable.navigation;
             navigation.mode = Navigation.Mode.None;
             TargetSelectable.navigation = navigation;
 
             TargetSelectable.transition = Selectable.Transition.None;
         }
 
-    
+
 #if UNITY_EDITOR
 
         protected override void Reset()
         {
             DisableSelectableSettings();
         }
-        
+
 #endif
     }
 }

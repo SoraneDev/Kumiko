@@ -7,7 +7,7 @@ using R3;
 namespace Kumiko.R3
 {
     /// <summary>
-    /// Kumikoのイベント購読をR3で行うための拡張メソッドを提供するクラス
+    /// Kumikoのイベント購読をR3で行うための拡張メソッドを提供する。
     /// </summary>
     public static class KumikoR3Extensions
     {
@@ -20,15 +20,15 @@ namespace Kumiko.R3
             return Observable.Create<InteractionState>(observer =>
             {
                 observer.OnNext(element.State);
-        
+
                 Action<InteractionState> handler = observer.OnNext;
                 element.StateChanged += handler;
-        
+
                 return Disposable.Create(() => element.StateChanged -= handler);
             });
         }
-        
-        
+
+
         /// <summary>
         /// 決定入力がGateを通過したときに通知されるObservableを取得する。
         /// </summary>
@@ -42,8 +42,8 @@ namespace Kumiko.R3
                 return Disposable.Create(() => button.Confirmed -= handler);
             });
         }
-        
-        
+
+
         /// <summary>
         /// 決定入力がGateに拒否されたときに通知されるObservableを取得する。
         /// </summary>
@@ -57,8 +57,8 @@ namespace Kumiko.R3
                 return Disposable.Create(() => button.ConfirmRejected -= handler);
             });
         }
-        
-        
+
+
         /// <summary>
         /// 入力種別の変化をObservableとして取得する。
         /// </summary>
@@ -68,10 +68,10 @@ namespace Kumiko.R3
             return Observable.Create<InputModality>(observer =>
             {
                 observer.OnNext(tracker.Modality);
-        
+
                 Action<InputModality> handler = observer.OnNext;
                 tracker.ModalityChanged += handler;
-        
+
                 return Disposable.Create(() => tracker.ModalityChanged -= handler);
             });
         }
@@ -79,4 +79,3 @@ namespace Kumiko.R3
 }
 
 #endif
-

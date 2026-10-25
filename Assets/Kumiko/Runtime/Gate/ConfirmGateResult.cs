@@ -1,7 +1,7 @@
 namespace Kumiko
 {
     /// <summary>
-    /// Gateの判定結果を表す列挙型
+    /// Gateの判定結果を表す。
     /// </summary>
     public enum ConfirmGateResult
     {
