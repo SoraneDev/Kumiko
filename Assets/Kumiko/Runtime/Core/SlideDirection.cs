@@ -1,7 +1,7 @@
 namespace Kumiko
 {
     /// <summary>
-    /// 値は最小から最大へ向かう方向を表す。
+    /// 値が最小から最大へ向かう方向を表す。
     /// </summary>
     public enum SlideDirection
     {

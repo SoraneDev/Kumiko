@@ -12,7 +12,7 @@ namespace Kumiko
     /// 遷移先を設定した方向では、その要素を優先する。
     /// 遷移先が未設定、または選択できない方向では、Modeに応じて遷移先を自動で探す。
     /// 自動で探す対象は、DirectionalNavigatorを持ち、同じルートのCanvasにある、選択できる要素だけ。
-    /// 要素がUsesMoveInputでtrueを返す方向（スライダーの値を変える方向など）では、選択を移さない。
+    /// 要素がUsesMoveInputでtrueを返す方向（スライダーの値の変更など）では、選択を移さない。
     /// </remarks>
     [DisallowMultipleComponent]
     [AddComponentMenu("Kumiko/DirectionalNavigator")]
@@ -212,7 +212,7 @@ namespace Kumiko
         }
 
 
-        // 矩形の中心から指定した向きにある辺の、中点をローカル座標で求める。
+        // 矩形の中心から指定した向きにある辺の中点を、ローカル座標で求める。
         private static Vector2 GetEdgeCenter(RectTransform rectTransform, Vector2 direction)
         {
             Rect rect = rectTransform.rect;

@@ -13,7 +13,7 @@ namespace Kumiko
         private KumikoElement _element;
 
 
-        /// <summary>同じGameObjectにアタッチされているKumikoElement</summary>
+        /// <summary>同じGameObjectにアタッチされているKumikoElement。</summary>
         protected KumikoElement Element => _element ??= GetComponent<KumikoElement>();
     }
 }

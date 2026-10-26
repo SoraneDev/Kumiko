@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Kumiko
 {
     /// <summary>
-    /// UIを決定入力でオンとオフを切り替えるトグルにする。
+    /// UIを、決定入力でオンとオフを切り替えるトグルにする。
     /// </summary>
     /// <remarks>
     /// オンのときだけ表示するGraphicを設定すると、オンとオフに合わせてGraphicを有効・無効にする。

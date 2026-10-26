@@ -8,7 +8,7 @@ namespace Kumiko
         /// <summary>キーボード・ゲームパッドの移動・決定・戻る。</summary>
         Navigation,
 
-        /// <summary>マウス、ペン。</summary>
+        /// <summary>マウス・ペン。</summary>
         Pointer,
 
         /// <summary>指。</summary>

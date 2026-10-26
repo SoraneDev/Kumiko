@@ -7,7 +7,7 @@ using UnityEngine.UI;
 namespace Kumiko
 {
     /// <summary>
-    /// UIを範囲内の値をドラッグや方向入力で変えられるスライダーにする。
+    /// UIを、範囲内の値をドラッグや方向入力で変えられるスライダーにする。
     /// </summary>
     /// <remarks>
     /// 値に合わせて、塗りとつまみのアンカーを書き換えて表示する。
@@ -91,7 +91,7 @@ namespace Kumiko
         public SlideDirection Direction => _direction;
 
 
-        // 整数のみの場合は、丸めによって値が変わらなくならないように、1以上の整数にする。
+        // 整数のみの場合は、丸めた結果、値が変わらなくなるのを防ぐため、1以上の整数にする。
         private float StepSize => _wholeNumbers ? Mathf.Max(1f, Mathf.Round(_stepSize)) : _stepSize;
 
 
@@ -204,7 +204,7 @@ namespace Kumiko
 
         private void UpdateValueFromPointer(PointerEventData eventData)
         {
-            // つまみの移動範囲を優先し、なければ塗りの伸縮範囲を、ポインタ位置から値を求める範囲にする。
+            // ポインタ位置から値を求める範囲には、つまみの移動範囲を使い、ない場合は塗りの伸縮範囲を使う。
             if (!_handleRect.TryGetParentArea(transform, out RectTransform area)
                 && !_fillRect.TryGetParentArea(transform, out area))
             {

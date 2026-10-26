@@ -34,7 +34,7 @@ namespace Kumiko
         {
             ConfirmGateResult finalResult = ConfirmGateResult.Passed;
 
-            // 判定: 状態を変えずに、すべてのGateを評価する。
+            // 判定：状態を変えずに、すべてのGateを評価する。
             // 最終結果は、並び順で最初にPassed以外を返したGateの結果にする。
             for (int i = 0; i < _gates.Length; i++)
             {
@@ -43,7 +43,7 @@ namespace Kumiko
                 if (finalResult == ConfirmGateResult.Passed) finalResult = _ownResults[i];
             }
 
-            // 確定: 最終結果が決まってから、各Gateに状態を更新させる。
+            // 確定：最終結果が決まってから、各Gateに状態を更新させる。
             for (int i = 0; i < _gates.Length; i++)
             {
                 if (_gates[i].IsActive()) _gates[i].Commit(_ownResults[i], finalResult);

@@ -23,7 +23,7 @@ namespace Kumiko
                 return extended.pointerType == UIPointerType.Touch ? InputModality.Touch : InputModality.Pointer;
             }
 
-            // InputSystemのUIモジュール以外のイベントは、入力種別を判別できないためPointerとして扱う。
+            // InputSystemのUIモジュール以外のイベントは、入力種別を判別できないため、Pointerとして扱う。
             return InputModality.Pointer;
         }
     }

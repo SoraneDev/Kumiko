@@ -53,7 +53,7 @@ namespace Kumiko.Editor
             if (_fillRect.objectReferenceValue == null && _handleRect.objectReferenceValue == null)
             {
                 EditorGUILayout.HelpBox(
-                    "Fill RectかHandle Rectの、少なくとも一方を設定してください。それぞれ親のRectTransformの範囲内で伸縮・移動します。",
+                    "Fill RectかHandle Rectの少なくとも一方を設定してください。それぞれ親のRectTransformの範囲内で伸縮・移動します。",
                     MessageType.Info
                 );
             }

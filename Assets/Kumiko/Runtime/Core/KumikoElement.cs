@@ -51,7 +51,6 @@ namespace Kumiko
         internal event Action<InteractionState> InternalStateChanged;
 
 
-
         /// <summary>現在のUI要素の表示状態。</summary>
         public InteractionState State { get; private set; }
 
@@ -137,7 +136,7 @@ namespace Kumiko
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            // ポインタが動いていないのにUIが動いて発火した場合は、ユーザーの操作ではないため入力種別を報告しない。
+            // ポインタが動いていないのにUIが動いて発火した場合は、ユーザーの操作ではないため、入力種別を報告しない。
             if (eventData.delta.sqrMagnitude > 0f)
             {
                 InputModalityTracker.Current.Report(PointerKindClassifier.Classify(eventData));
@@ -264,7 +263,7 @@ namespace Kumiko
         /// <summary>
         /// 自身とCanvasGroupによる操作可否を考慮した、実効的な操作可能状態を取得する。
         /// </summary>
-        /// <returns>操作可能な場合はtrue、操作不可能の場合はfalseを返す。</returns>
+        /// <returns>操作可能な場合はtrue、操作不可能な場合はfalseを返す。</returns>
         public bool IsInteractable()
         {
             return _groupsAllowInteraction && _interactable;
@@ -273,7 +272,7 @@ namespace Kumiko
 
         /// <summary>
         /// 方向入力を、要素自身の操作に使うかどうかを取得する。
-        /// 派生クラスで上書きして、値の変化などに使う方向でtrueを返す。基底は常にfalseを返す。
+        /// 派生クラスで上書きして、値の変更でtrueを返す。基底は常にfalseを返す。
         /// </summary>
         /// <param name="direction">方向入力の向き。</param>
         /// <returns>自身の操作に使う場合はtrue、使わない場合はfalseを返す。</returns>
@@ -330,7 +329,7 @@ namespace Kumiko
 
         private void RefreshState()
         {
-            // 現在の入力種別と状態フラグから表示する状態を取得し通知する。
+            // 現在の入力種別と状態フラグから、表示する状態を取得し通知する。
             InputModality modality = InputModalityTracker.Current.Modality;
             InteractionState nextState = InteractionStateResolver.Resolve(_flags, modality);
 
@@ -380,7 +379,7 @@ namespace Kumiko
 
                     // ignoreParentGroupsが有効なCanvasGroupで探索を止める。
                     // ignoreParentGroupsはenabledの状態に関わらずチェックする。
-                    // Unity標準のSelectableと同じ判定方法。
+                    // Unity標準のSelectableと同じ判定方法にしている。
                     if (canvasGroup.ignoreParentGroups) return true;
                 }
 

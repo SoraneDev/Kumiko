@@ -64,8 +64,8 @@ namespace Kumiko
         }
 
 
-        // 本ライブラリではSelectableのNavigation機能とTransition機能は
-        // 使用しない設計のため機能をNoneにする。
+        // 選択の移動と見た目の切り替えはKumiko側で行うため、
+        // SelectableのNavigationとTransitionをNoneにする。
         private void DisableSelectableSettings()
         {
             Navigation navigation = TargetSelectable.navigation;

@@ -6,8 +6,7 @@ namespace Kumiko
 {
     /// <summary>
     /// UIをインタラクション可能なボタンにする。
-    /// Gateを同じGameObjectにアタッチすると、ダブルクリックや
-    /// クールダウンなどの通過条件を決定入力に付与できる。
+    /// Gateを同じGameObjectにアタッチすると、ダブルクリックやクールダウンなどの通過条件を決定入力に付与できる。
     /// </summary>
     /// <remarks>Gateは、Awakeの時点でアタッチされているものだけが対象になる。</remarks>
     [AddComponentMenu("Kumiko/KumikoButton")]
@@ -42,7 +41,7 @@ namespace Kumiko
         {
             base.OnDisable();
 
-            // 再び有効になったときに、判定途中の状態を持ち越さないためすべてリセットする。
+            // 再び有効になったときに、判定途中の状態を持ち越さないため、すべてリセットする。
             _confirmGateChain.ResetAll();
         }
 
