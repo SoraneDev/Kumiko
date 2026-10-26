@@ -4,25 +4,37 @@ using UnityEngine;
 
 namespace Kumiko.Editor
 {
+    /// <summary>
+    /// エディターのCreateMenuを拡張する。
+    /// </summary>
     public static class KumikoCreateMenu
     {
-        private const string KumikoButtonPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Button.prefab";
-        private const string SliderPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Slider.prefab";
-        private const string TogglePath = "Packages/com.sorane.kumiko/Editor/Prefabs/Toggle.prefab";
-    
-    
-        [MenuItem("GameObject/Kumiko/Button", false, 10)]
-        private static void CreateButton(MenuCommand command) => Create(command, KumikoButtonPath);
-    
-        
-        [MenuItem("GameObject/Kumiko/Slider", false, 11)]
-        private static void CreateSlider(MenuCommand command) => Create(command, SliderPath);
-    
-        
-        [MenuItem("GameObject/Kumiko/Toggle", false, 12)]
-        private static void CreateToggle(MenuCommand command) => Create(command, TogglePath);
-        
-        
+        private const string ButtonPrefabPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Button.prefab";
+        private const string SliderPrefabPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Slider.prefab";
+        private const string TogglePrefabPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Toggle.prefab";
+
+
+        [MenuItem("GameObject/Kumiko/Button", false, 0)]
+        private static void CreateButton(MenuCommand command)
+        {
+            Create(command, ButtonPrefabPath);
+        }
+
+
+        [MenuItem("GameObject/Kumiko/Slider", false, 1)]
+        private static void CreateSlider(MenuCommand command)
+        {
+            Create(command, SliderPrefabPath);
+        }
+
+
+        [MenuItem("GameObject/Kumiko/Toggle", false, 2)]
+        private static void CreateToggle(MenuCommand command)
+        {
+            Create(command, TogglePrefabPath);
+        }
+
+
         private static void Create(MenuCommand command, string prefabPath)
         {
             var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
@@ -35,15 +47,14 @@ namespace Kumiko.Editor
 
             var instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
 
-            GameObject parent = command.context as GameObject;
+            var parent = command.context as GameObject;
 
-            // ルートで生成する場合はCanvasを検索
+            // ルートで生成する場合は、シーン内のCanvasを親にする。
             if (parent == null)
             {
                 var canvas = Object.FindFirstObjectByType<Canvas>();
 
-                if (canvas != null)
-                    parent = canvas.gameObject;
+                if (canvas != null) parent = canvas.gameObject;
             }
 
             GameObjectUtility.SetParentAndAlign(instance, parent);

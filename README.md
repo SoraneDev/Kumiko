@@ -19,14 +19,16 @@ Unity（uGUI）向けの、ゲームパッド・マウス＆キーボード・�
 - **決定入力の共通化**：マウスのクリック、タッチのタップ、ゲームパッド・キーボードの Submit を、同じ `Confirmed` イベントで受け取れます。
 - **入力処理と見た目の分離**：表示状態はイベントで通知します。色・スケール・Animator などによる演出は、利用側で自由に実装できます。
 - **CanvasGroup に対応**：親の CanvasGroup の `interactable` を、Unity 標準の Selectable と同じ判定方法で反映します。
-- **Unity 標準 UI との連携**：`KumikoSelectableBridge` を使うと、Slider や Toggle などの標準 Selectable と組み合わせられます。
+- **Kumiko だけで作れる基本の UI**：ボタン・トグル・スライダーを、Unity 標準の Selectable を使わずに作れます。
+- **自動ナビゲーション**：方向入力の先にある要素を自動で探して、選択を移します。必要な方向だけ、移動先を手動で指定することもできます。
+- **Unity 標準 UI との連携**：Kumiko にまだない UI（InputField など）は、`KumikoSelectableBridge` で標準の Selectable と組み合わせられます。
 - **R3 に依存しないコア**：基本機能は外部ライブラリに依存しません。R3 を導入している場合は、専用の拡張メソッドを使えます。
 
 ## 動作環境
 
 - Unity 6 以降
 - uGUI
-- Input System（シーンの EventSystem に Input System UI Input Module を設定します）
+- Input System 1.18.0 以降（シーンの EventSystem に Input System UI Input Module を設定します）
 - R3（任意。拡張メソッドを使う場合のみ）
 
 ---
@@ -43,7 +45,7 @@ https://github.com/SoraneDev/Kumiko.git?path=/Assets/Kumiko
 
 `?path=` を付けることで、リポジトリ内の Kumiko パッケージだけを導入します。
 
-Kumiko は Input System を使用します。Input System は自動では導入されないため、先に Package Manager から導入してください。
+Kumiko は Input System を使用します。Input System は依存パッケージとして自動で導入されます（1.18.0 以降）。
 
 ### 手動
 
@@ -152,20 +154,22 @@ Kumiko では、基本となる UI 要素に、必要な機能のコンポーネ
 |---|---|
 | `KumikoElement` | 入力イベント・操作可否・表示状態を管理する基本のコンポーネント。継承して独自の UI 要素を作れる |
 | `KumikoButton` | 決定入力を受け、Gate の判定結果をイベントで通知するボタン |
+| `KumikoToggle` | 決定入力でオンとオフを切り替えるトグル |
+| `KumikoSlider` | 範囲内の値を、ドラッグや方向入力で変えるスライダー |
 | `DoubleClickGate` | 2 回の決定入力で決定とする Gate |
 | `CooldownGate` | 決定から一定時間、次の決定を受け付けない Gate |
-| `DirectionalNavigator` | 上下左右の方向入力で、選択を指定した要素へ移す |
+| `DirectionalNavigator` | 上下左右の方向入力で、指定した要素、または自動で探した要素へ選択を移す |
 | `KumikoSelectableBridge` | Unity 標準の Selectable と、操作できるかどうかを同期する |
 
-Gate は `KumikoButton`、ほかのコンポーネントは `KumikoElement`（または `KumikoButton`）と同じ GameObject に追加します。
+Gate は `KumikoButton`、ほかのコンポーネントは `KumikoElement`（またはその派生）と同じ GameObject に追加します。
 
 Hierarchy の作成メニューで作れる UI と、付いているコンポーネントは次のとおりです。
 
 | メニュー | 付いているコンポーネント |
 |---|---|
 | `Kumiko > Button` | `KumikoButton`、`DirectionalNavigator` |
-| `Kumiko > Slider` | Slider、`KumikoElement`、`KumikoSelectableBridge`、`DirectionalNavigator` |
-| `Kumiko > Toggle` | Toggle、`KumikoElement`、`KumikoSelectableBridge`、`DirectionalNavigator` |
+| `Kumiko > Slider` | `KumikoSlider`、`DirectionalNavigator` |
+| `Kumiko > Toggle` | `KumikoToggle`、`DirectionalNavigator` |
 
 コンポーネントではありませんが、現在の入力の種類は `InputModalityTracker` が管理しています。`InputModalityTracker.Current` からアクセスできます。
 
@@ -229,6 +233,43 @@ element.Interactable = false;
 
 - 実際に操作できるかどうかは `IsInteractable()` で取得します。親の CanvasGroup の `interactable` も考慮されます。
 - 選択中の要素が操作できなくなると、選択が外れます。
+
+### トグル
+
+`KumikoToggle` は、決定入力（クリック・タップ・Submit）のたびにオンとオフを切り替えます。
+
+```csharp
+toggle.IsOnChanged += OnIsOnChanged;   // 不要になったら解除する
+
+toggle.IsOn = true;                    // IsOnChanged が通知される
+toggle.SetIsOnWithoutNotify(false);    // 通知せずに切り替える
+```
+
+- Inspector の `Is On Graphic` にチェックマークなどの Graphic を設定すると、オンのときだけ表示します。
+- 切り替えの演出を自分で作る場合は、`Is On Graphic` を設定せずに `IsOnChanged` を購読してください。
+
+### スライダー
+
+`KumikoSlider` は、範囲内の値をドラッグや方向入力で変えます。
+
+```csharp
+slider.ValueChanged += OnValueChanged;  // 不要になったら解除する
+
+slider.Value = 0.5f;                   // ValueChanged が通知される
+slider.SetValueWithoutNotify(0.2f);    // 通知せずに変える
+```
+
+- つまみ以外を押すと、押した位置へ値が移ります。つまみを押した場合は、値を飛ばさずにドラッグできます。
+- `Direction` の軸と同じ向きの方向入力で、`Step Size` ずつ値が変わります。その方向では `DirectionalNavigator` による選択の移動は起きません。
+- 塗り（`Fill Rect`）とつまみ（`Handle Rect`）は、値に合わせてアンカーが書き換えられます。塗りの Image を Filled にした場合は、`fillAmount` が書き換えられます。
+- Inspector で `Direction` を変えると、Unity 標準の Slider と同じように、自身と子のレイアウトも自動で変わります。横と縦が入れ替わる場合は大きさや位置の横と縦を入れ替え、逆向きになる場合は配置を反転します。この変更は Undo で元に戻せます。
+- 親に合わせて伸縮するアンカーの場合は、アンカーも入れ替えるので、幅や高さが 0 になって消えることはありません。
+- Inspector では、`Min Value` が `Max Value` を超える値は反映されません。`Value` は範囲内のスライダーで設定できます。
+- スクリプトから方向を変える場合は、`SetDirection(direction, flipsLayout: true)` でレイアウトも合わせて変更できます。値だけを変える場合は `flipsLayout: false` を指定します。
+
+```csharp
+slider.SetDirection(SlideDirection.BottomToTop, flipsLayout: true);
+```
 
 ### 決定入力に条件を付ける（Gate）
 
@@ -294,16 +335,46 @@ public sealed class UseLimitGate : KumikoGate
 }
 ```
 
+### 独自の UI 要素を作る
+
+`KumikoElement` を継承すると、操作可能な状態で受けた入力に応じた処理を追加できます。表示状態と操作可否の管理は基底クラスが行います。
+
+| メソッド | 呼ばれるタイミング |
+|---|---|
+| `OnConfirmInput()` | 決定入力（クリック・タップ・Submit）を受けたとき |
+| `OnPointerDownInput(eventData)` | ポインタの押下（マウスの左ボタン・タッチなど）を受けたとき |
+| `UsesMoveInput(direction)` | 方向入力を要素自身の操作に使うかを問い合わせるとき。`true` を返した方向では `DirectionalNavigator` が選択を移さない |
+| `OnMoveInput(direction)` | `UsesMoveInput` で `true` を返した方向入力を受けたとき |
+
 ### 方向ナビゲーション
 
-`DirectionalNavigator` を追加すると、ゲームパッドやキーボードの方向入力で、選択を移す先を指定できます。
+`DirectionalNavigator` を追加すると、ゲームパッドやキーボードの方向入力で選択を移せます。移動先は、手動で指定することも、自動で探すこともできます。
 
-- Inspector で上下左右それぞれの移動先（`KumikoElement`）を設定します。
-- 移動先が非アクティブ、または操作できない場合は、選択を移しません。
+- **手動の移動先**：Inspector の `Select On Up / Down / Left / Right` に、移動先の `KumikoElement` を設定します。設定した方向では、自動で探すよりも優先します。
+- **自動で探す**：`Mode` で、移動先が未設定（または選択できない）方向を、自動で探すかどうかを決めます。
+
+| Mode | 自動で探す方向 |
+|---|---|
+| `Manual` | 探さない。設定した移動先へだけ選択を移す |
+| `Automatic` | 上下左右 |
+| `Horizontal` | 左右だけ |
+| `Vertical` | 上下だけ |
+
+自動で探す場合は、方向入力の先にある要素のうち、近くて向きのずれが小さい要素を選びます。評価方法は Unity 標準の Selectable と同じです。
+
+- 対象になるのは、`DirectionalNavigator` を持ち、同じルートの Canvas にある、選択できる要素だけです。選択を移した先から、さらに方向入力で移動できるようにするためです。
+- 開いていないメニューの要素は、CanvasGroup の `interactable` をオフにすると対象から外れます。
+- `Wrap Around` をオンにすると、`Horizontal` と `Vertical` で、端から反対側の端へ回り込みます。回り込む先は、反対側の端のうち、自身と同じ行（または列）にある要素です。
+- 選択を移す先は、`FindTarget(direction)` で取得できます。
+
+次の場合は、選択を移しません。
+
+- 移動先が見つからない場合や、手動の移動先が選択できず、自動で探さない場合。
+- スライダーの値を変える方向など、要素自身が操作に使う方向。
 
 ### Unity 標準の Selectable との連携
 
-`KumikoSelectableBridge` を使うと、Slider や Toggle などの標準 Selectable の機能を使いながら、操作できるかどうかの管理と表示状態の通知を Kumiko で行えます。
+`KumikoSelectableBridge` を使うと、Kumiko にまだない標準 Selectable（InputField など）の機能を使いながら、操作できるかどうかの管理と表示状態の通知を Kumiko で行えます。トグルとスライダーは、Kumiko のコンポーネントを使ってください。
 
 - `KumikoSelectableBridge` は、標準 Selectable の Navigation と Transition を `None` に設定し、Kumiko の操作可否を Selectable に反映します。
 - 見た目の切り替えと選択の移動は、Kumiko 側で管理してください。
@@ -325,7 +396,7 @@ public sealed class ButtonR3Example : MonoBehaviour
 
     private void Start()
     {
-        _button.OnConfirmAsObservable()
+        _button.ConfirmAsObservable()
             .Subscribe(_ => Debug.Log("決定されました。"))
             .AddTo(this);
     }
@@ -335,9 +406,13 @@ public sealed class ButtonR3Example : MonoBehaviour
 | メソッド | 内容 |
 |---|---|
 | `StateAsObservable()` | 表示状態の変化。購読した時点で現在の状態も流す |
-| `OnConfirmAsObservable()` | 決定の通知 |
-| `OnConfirmRejectedAsObservable()` | 決定入力が拒否されたときの通知 |
+| `ConfirmAsObservable()` | 決定の通知 |
+| `ConfirmRejectedAsObservable()` | 決定入力が拒否されたときの通知 |
+| `IsOnAsObservable()` | トグルのオンとオフの切り替わり。購読した時点で現在の状態も流す |
+| `ValueAsObservable()` | スライダーの値の変化。購読した時点で現在の値も流す |
 | `ModalityAsObservable()` | 入力の種類の変化。購読した時点で現在の入力の種類も流す |
+
+`OnConfirmAsObservable()` と `OnConfirmRejectedAsObservable()` は非推奨です。`ConfirmAsObservable()` と `ConfirmRejectedAsObservable()` を使ってください。
 
 拡張メソッドは、R3 の Unity 向けパッケージ（`com.cysharp.r3`）1.3.1 以降を導入すると自動で有効になります。Scripting Define Symbols を手動で追加する必要はありません。R3 は Kumiko と一緒には導入されないため、使う場合は別途導入してください。
 
@@ -361,17 +436,42 @@ public sealed class ButtonR3Example : MonoBehaviour
 
 | 項目 | 説明 | 初期値 |
 |---|---|---|
-| Cooldown Time | 決定してから、次の決定入力を受け付けるまでの時間（秒） | 1 |
+| Cooldown Duration | 決定してから、次の決定入力を受け付けるまでの時間（秒） | 1 |
+
+### KumikoToggle
+
+| 項目 | 説明 | 初期値 |
+|---|---|---|
+| Interactable | 操作できるかどうか | オン |
+| Is On | オンかどうか | オフ |
+| Is On Graphic | オンのときだけ表示する Graphic（チェックマークなど）。未設定でもよい | なし |
+
+### KumikoSlider
+
+| 項目 | 説明 | 初期値 |
+|---|---|---|
+| Interactable | 操作できるかどうか | オン |
+| Fill Rect | 値に合わせて伸縮する塗り。親が伸縮する範囲になる | なし |
+| Handle Rect | 値の位置へ移動するつまみ。親が移動する範囲になる | なし |
+| Direction | 値が最小から最大へ向かう方向 | Left To Right |
+| Min Value / Max Value | 値の範囲 | 0 / 1 |
+| Whole Numbers | 値を整数に丸めるかどうか | オフ |
+| Value | 現在の値 | 0 |
+| Step Size | 方向入力 1 回で変化する量。整数のみの場合は 1 以上の整数に丸める | 0.1 |
 
 ### DirectionalNavigator
 
 | 項目 | 説明 | 初期値 |
 |---|---|---|
-| Select On Up / Down / Left / Right | 方向入力で選択を移す先の `KumikoElement` | なし |
+| Mode | 移動先が未設定、または選択できない方向で、自動で探す範囲（Manual・Automatic・Horizontal・Vertical） | Manual |
+| Wrap Around | `Horizontal` と `Vertical` で、端から反対側の端へ回り込むかどうか | オフ |
+| Select On Up / Down / Left / Right | 方向入力で選択を移す先の `KumikoElement`。設定した方向では、自動で探すよりも優先する | なし |
+
+`Mode` の初期値は、以前のバージョンと同じ動きになるように `Manual` にしています。Hierarchy の作成メニューで作った UI では、`Automatic` に設定されています。
 
 ### KumikoSelectableBridge
 
-設定項目はありません。同じ GameObject に標準の Selectable（Slider・Toggle など）が必要です。
+設定項目はありません。同じ GameObject に標準の Selectable（InputField など）が必要です。
 
 ---
 
@@ -387,6 +487,7 @@ public sealed class ButtonR3Example : MonoBehaviour
 - **無効化**：コンポーネントが無効になると、ホバー・選択・押下の状態と、Gate の判定途中の状態がリセットされます。
 - **アプリケーションのフォーカス**：アプリケーションがフォーカスを失ったときは、押下状態を解除します。
 - **ドメインリロード**：Enter Play Mode Options でドメインリロードを無効にしていても、`InputModalityTracker.Current` は再生開始時に作り直されます。
+- **値の表示**：スライダーは、つまみと塗りのアンカーを書き換えて値を表示します。書き換えるアンカーは Inspector で編集できなくなります。
 
 ---
 
@@ -394,9 +495,9 @@ public sealed class ButtonR3Example : MonoBehaviour
 
 - **Gate の実行時の追加・削除**：`KumikoButton` の `Awake` の時点で付いている Gate だけが対象です。
 - **選択の復帰**：選択中の要素が操作できなくなると、選択が外れます。ほかの要素へ自動で選択を移す機能はありません。
-- **自動ナビゲーション**：`DirectionalNavigator` は移動先を手動で設定する方式です。自動ナビゲーションには対応していません。
+- **自動ナビゲーションの対象**：別のルート Canvas にある要素は、自動では探しません。Canvas をまたいで移動させる場合は、移動先を手動で設定してください。
 - **Input Module**：入力の種類の判定は、Input System UI Input Module を前提としています。ほかの Input Module では、タッチも `Pointer` として扱われます。
-- **Slider との方向入力の競合**：左右の入力で値を変える Slider に、`DirectionalNavigator` の左右の移動先を設定すると、値の変更と選択の移動が同時に起きる場合があります。
+- **トグルのグループ**：複数のトグルから 1 つだけを選ぶグループ機能はありません。
 - **一部の標準 UI**：Dropdown・ScrollView・InputField などは、選択の移動や操作の調整が複雑なため、現在のバージョンでは使用を推奨していません。
 
 ---

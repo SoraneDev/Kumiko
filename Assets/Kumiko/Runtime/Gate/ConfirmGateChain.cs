@@ -6,18 +6,19 @@ using UnityEngine;
 namespace Kumiko
 {
     /// <summary>
-    /// 評価するGateを管理するクラス
+    /// Gateをまとめて評価し、決定入力の最終結果を決める。
     /// </summary>
     internal sealed class ConfirmGateChain
     {
         private IConfirmGate[] _gates = Array.Empty<IConfirmGate>();
         private ConfirmGateResult[] _ownResults = Array.Empty<ConfirmGateResult>();
 
-        
+
         /// <summary>
-        /// 対象のGameObjectからIConfirmGateを取得し、Stageの昇順でソートして格納する。
+        /// 対象のGameObjectからIConfirmGateを取得し、Stageの昇順に並べて格納する。
+        /// 同じStageでは取得した順を保つ。
         /// </summary>
-        /// <param name="owner">Gateを持つ対象のGameObject</param>
+        /// <param name="owner">Gateを持つ対象のGameObject。</param>
         internal void Collect(GameObject owner)
         {
             _gates = owner.GetComponents<IConfirmGate>().OrderBy(gate => gate.Stage).ToArray();
@@ -28,12 +29,12 @@ namespace Kumiko
         /// <summary>
         /// すべてのGateを評価して最終結果を決め、各Gateの内部状態を更新する。
         /// </summary>
-        /// <returns>すべてのGateを通過した場合はPassedを返す。そうでない場合はGateが出す結果を返す。</returns>
+        /// <returns>すべてのGateを通過した場合はPassed、そうでない場合は最初にPassed以外を返したGateの結果を返す。</returns>
         internal ConfirmGateResult Resolve()
         {
-            var finalResult = ConfirmGateResult.Passed;
+            ConfirmGateResult finalResult = ConfirmGateResult.Passed;
 
-            // 判定: 状態を変えずに、すべてのGateを評価する。
+            // 判定：状態を変えずに、すべてのGateを評価する。
             // 最終結果は、並び順で最初にPassed以外を返したGateの結果にする。
             for (int i = 0; i < _gates.Length; i++)
             {
@@ -42,7 +43,7 @@ namespace Kumiko
                 if (finalResult == ConfirmGateResult.Passed) finalResult = _ownResults[i];
             }
 
-            // 確定: 最終結果が決まってから、各Gateに状態を更新させる。
+            // 確定：最終結果が決まってから、各Gateに状態を更新させる。
             for (int i = 0; i < _gates.Length; i++)
             {
                 if (_gates[i].IsActive()) _gates[i].Commit(_ownResults[i], finalResult);
@@ -57,7 +58,7 @@ namespace Kumiko
         /// </summary>
         internal void ResetAll()
         {
-            foreach (var gate in _gates) gate.ResetState();
+            foreach (IConfirmGate gate in _gates) gate.ResetState();
         }
     }
 }

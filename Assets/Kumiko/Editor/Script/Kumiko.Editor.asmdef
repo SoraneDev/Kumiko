@@ -1,8 +1,12 @@
 {
     "name": "Kumiko.Editor",
     "rootNamespace": "Kumiko.Editor",
-    "references": [],
-    "includePlatforms": [],
+    "references": [
+        "GUID:9a270d36ba37ed74485e9fe12fd70233"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

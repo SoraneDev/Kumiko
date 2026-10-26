@@ -5,15 +5,15 @@ using UnityEngine.InputSystem.UI;
 namespace Kumiko
 {
     /// <summary>
-    /// PointerEventDataの入力をタッチとポインタに分類するクラス
+    /// PointerEventDataの入力をタッチとポインタに分類する。
     /// </summary>
     internal static class PointerKindClassifier
     {
         /// <summary>
-        /// PointerEventDataの入力をタッチとポインタに分類する。
+        /// PointerEventDataから、入力種別がTouchかPointerかを判別する。
         /// </summary>
-        /// <param name="eventData">分類したいPointerEventData</param>
-        /// <returns>入力種別を返す。</returns>
+        /// <param name="eventData">分類するPointerEventData。</param>
+        /// <returns>TouchまたはPointerを返す。</returns>
         internal static InputModality Classify(PointerEventData eventData)
         {
             // InputSystemのUIモジュールでは、pointerIdはデバイスごとの識別子で、入力種別を表さない。
@@ -23,7 +23,7 @@ namespace Kumiko
                 return extended.pointerType == UIPointerType.Touch ? InputModality.Touch : InputModality.Pointer;
             }
 
-            // InputSystemのUIモジュール以外のイベントは、入力種別を判別できないためPointerとして扱う。
+            // InputSystemのUIモジュール以外のイベントは、入力種別を判別できないため、Pointerとして扱う。
             return InputModality.Pointer;
         }
     }

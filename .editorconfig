@@ -1,0 +1,208 @@
+root = true
+
+
+# === 基本書式 ===
+
+
+[*.cs]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+
+# === C# ===
+
+
+# --- ブレースは独立行（Allman） ---
+csharp_new_line_before_open_brace = all
+
+
+# --- 1行に収まる if などはブレース省略を許可し、複数行ならブレース必須 ---
+csharp_prefer_braces = when_multiline:suggestion
+
+
+# --- namespace はブロック形式（Unity 6 は C# 9 のため） ---
+csharp_style_namespace_declarations = block_scoped:warning
+
+
+# --- アクセス修飾子を省略しない（インターフェースのメンバーは除く） ---
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+
+
+# --- var は型が右辺から明らかなときだけ ---
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_for_built_in_types = false:suggestion
+csharp_style_var_elsewhere = false:suggestion
+
+
+# --- プロパティは式形式、メソッドはブロック形式 ---
+csharp_style_expression_bodied_properties = true:suggestion
+csharp_style_expression_bodied_methods = false:suggestion
+
+
+# === 空行（Rider） ===
+
+
+# --- using の後、型の前後、メソッドの前後は2行 ---
+resharper_blank_lines_after_using_list = 2
+resharper_blank_lines_around_type = 2
+resharper_blank_lines_around_single_line_type = 2
+resharper_blank_lines_around_invocable = 2
+resharper_blank_lines_around_single_line_invocable = 2
+
+
+# --- namespace と型の中の先頭・末尾には空行を入れない ---
+resharper_blank_lines_inside_namespace = 0
+resharper_blank_lines_inside_type = 0
+
+
+# --- フィールドとプロパティは同種を詰められるように強制しない（手で入れた2行は残す） ---
+resharper_blank_lines_around_single_line_field = 0
+resharper_blank_lines_around_single_line_property = 0
+resharper_blank_lines_around_single_line_auto_property = 0
+resharper_keep_blank_lines_in_declarations = 2
+
+
+# --- メソッド内の段落区切りは最大1行、ローカル関数の前後は1行 ---
+resharper_keep_blank_lines_in_code = 1
+resharper_blank_lines_around_local_method = 1
+
+
+# --- XML ドキュメントコメントの中身はタグと同じ位置に揃える ---
+resharper_xmldoc_indent_text = ZeroIndent
+resharper_xmldoc_indent_child_elements = ZeroIndent
+
+
+# --- 複数行のリストは最後の要素にもカンマを付ける ---
+resharper_trailing_comma_in_multiline_lists = true
+
+
+# === 命名スタイル ===
+
+
+# --- PascalCase ---
+dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+
+# --- camelCase ---
+dotnet_naming_style.camel_case.capitalization = camel_case
+
+
+# --- _camelCase ---
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+
+
+# --- s_camelCase ---
+dotnet_naming_style.s_camel_case.capitalization = camel_case
+dotnet_naming_style.s_camel_case.required_prefix = s_
+
+
+# --- IPascalCase ---
+dotnet_naming_style.i_pascal_case.capitalization = pascal_case
+dotnet_naming_style.i_pascal_case.required_prefix = I
+
+
+# --- TPascalCase ---
+dotnet_naming_style.t_pascal_case.capitalization = pascal_case
+dotnet_naming_style.t_pascal_case.required_prefix = T
+
+
+# === 命名規則 ===
+
+
+# --- const フィールドは PascalCase ---
+dotnet_naming_symbols.const_fields.applicable_kinds = field
+dotnet_naming_symbols.const_fields.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+dotnet_naming_symbols.const_fields.required_modifiers = const
+
+dotnet_naming_rule.const_fields_rule.symbols = const_fields
+dotnet_naming_rule.const_fields_rule.style = pascal_case
+dotnet_naming_rule.const_fields_rule.severity = warning
+
+
+# --- private const フィールドは PascalCase（private static ルールとの重なりを解消する） ---
+dotnet_naming_symbols.private_const_fields.applicable_kinds = field
+dotnet_naming_symbols.private_const_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_const_fields.required_modifiers = const
+
+dotnet_naming_rule.private_const_fields_rule.symbols = private_const_fields
+dotnet_naming_rule.private_const_fields_rule.style = pascal_case
+dotnet_naming_rule.private_const_fields_rule.severity = warning
+
+
+# --- private static フィールドは s_camelCase ---
+dotnet_naming_symbols.private_static_fields.applicable_kinds = field
+dotnet_naming_symbols.private_static_fields.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_fields.required_modifiers = static
+
+dotnet_naming_rule.private_static_fields_rule.symbols = private_static_fields
+dotnet_naming_rule.private_static_fields_rule.style = s_camel_case
+dotnet_naming_rule.private_static_fields_rule.severity = warning
+
+
+# --- private 以外の static フィールドは PascalCase ---
+dotnet_naming_symbols.non_private_static_fields.applicable_kinds = field
+dotnet_naming_symbols.non_private_static_fields.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+dotnet_naming_symbols.non_private_static_fields.required_modifiers = static
+
+dotnet_naming_rule.non_private_static_fields_rule.symbols = non_private_static_fields
+dotnet_naming_rule.non_private_static_fields_rule.style = pascal_case
+dotnet_naming_rule.non_private_static_fields_rule.severity = warning
+
+
+# --- private インスタンスフィールドは _camelCase ---
+dotnet_naming_symbols.private_instance_fields.applicable_kinds = field
+dotnet_naming_symbols.private_instance_fields.applicable_accessibilities = private
+
+dotnet_naming_rule.private_instance_fields_rule.symbols = private_instance_fields
+dotnet_naming_rule.private_instance_fields_rule.style = underscore_camel_case
+dotnet_naming_rule.private_instance_fields_rule.severity = warning
+
+
+# --- private 以外のインスタンスフィールドは PascalCase ---
+dotnet_naming_symbols.non_private_instance_fields.applicable_kinds = field
+dotnet_naming_symbols.non_private_instance_fields.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+
+dotnet_naming_rule.non_private_instance_fields_rule.symbols = non_private_instance_fields
+dotnet_naming_rule.non_private_instance_fields_rule.style = pascal_case
+dotnet_naming_rule.non_private_instance_fields_rule.severity = warning
+
+
+# --- 型・メソッド・プロパティ・イベント・ローカル関数は PascalCase ---
+dotnet_naming_symbols.types_and_members.applicable_kinds = namespace, class, struct, enum, delegate, method, property, event, local_function
+dotnet_naming_symbols.types_and_members.applicable_accessibilities = *
+
+dotnet_naming_rule.types_and_members_rule.symbols = types_and_members
+dotnet_naming_rule.types_and_members_rule.style = pascal_case
+dotnet_naming_rule.types_and_members_rule.severity = warning
+
+
+# --- インターフェースは IPascalCase ---
+dotnet_naming_symbols.interfaces.applicable_kinds = interface
+dotnet_naming_symbols.interfaces.applicable_accessibilities = *
+
+dotnet_naming_rule.interfaces_rule.symbols = interfaces
+dotnet_naming_rule.interfaces_rule.style = i_pascal_case
+dotnet_naming_rule.interfaces_rule.severity = warning
+
+
+# --- ジェネリックの型引数は TPascalCase ---
+dotnet_naming_symbols.type_parameters.applicable_kinds = type_parameter
+dotnet_naming_symbols.type_parameters.applicable_accessibilities = *
+
+dotnet_naming_rule.type_parameters_rule.symbols = type_parameters
+dotnet_naming_rule.type_parameters_rule.style = t_pascal_case
+dotnet_naming_rule.type_parameters_rule.severity = warning
+
+
+# --- ローカル変数・引数は camelCase ---
+dotnet_naming_symbols.locals_and_parameters.applicable_kinds = local, parameter
+dotnet_naming_symbols.locals_and_parameters.applicable_accessibilities = *
+
+dotnet_naming_rule.locals_and_parameters_rule.symbols = locals_and_parameters
+dotnet_naming_rule.locals_and_parameters_rule.style = camel_case
+dotnet_naming_rule.locals_and_parameters_rule.severity = warning
