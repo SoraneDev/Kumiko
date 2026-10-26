@@ -170,6 +170,10 @@ namespace Kumiko
 
             _flags = _flags.Add(InteractionFlags.Pressed);
             RefreshState();
+
+            if (!IsInteractable()) return;
+
+            OnPointerDownInput(eventData);
         }
 
 
@@ -247,6 +251,11 @@ namespace Kumiko
         public void OnMove(AxisEventData eventData)
         {
             InputModalityTracker.Current.Report(InputModality.Navigation);
+
+            if (!IsInteractable()) return;
+            if (!UsesMoveInput(eventData.moveDir)) return;
+
+            OnMoveInput(eventData.moveDir);
         }
 
         #endregion
@@ -263,10 +272,44 @@ namespace Kumiko
 
 
         /// <summary>
+        /// 方向入力を、要素自身の操作に使うかどうかを取得する。
+        /// 派生クラスで上書きして、値の変化などに使う方向でtrueを返す。基底は常にfalseを返す。
+        /// </summary>
+        /// <param name="direction">方向入力の向き。</param>
+        /// <returns>自身の操作に使う場合はtrue、使わない場合はfalseを返す。</returns>
+        /// <remarks>trueを返した方向の入力を受けると、OnMoveInputが呼ばれる。</remarks>
+        protected internal virtual bool UsesMoveInput(MoveDirection direction)
+        {
+            return false;
+        }
+
+
+        /// <summary>
         /// 決定入力（クリック・タップ・Submit）を、操作可能な状態で受けたときに呼ばれる。
         /// 派生クラスで上書きして、決定時の処理を実装する。基底は何もしない。
         /// </summary>
         protected virtual void OnConfirmInput()
+        {
+        }
+
+
+        /// <summary>
+        /// ポインタの押下（マウスの左ボタン・タッチなど）を、操作可能な状態で受けたときに呼ばれる。
+        /// 派生クラスで上書きして、押した位置に応じた処理を実装する。基底は何もしない。
+        /// </summary>
+        /// <param name="eventData">押下のイベント情報。</param>
+        /// <remarks>呼ばれる時点で、表示状態はPressedになっている。</remarks>
+        protected virtual void OnPointerDownInput(PointerEventData eventData)
+        {
+        }
+
+
+        /// <summary>
+        /// UsesMoveInputでtrueを返した方向入力を、操作可能な状態で受けたときに呼ばれる。
+        /// 派生クラスで上書きして、方向入力による処理を実装する。基底は何もしない。
+        /// </summary>
+        /// <param name="direction">方向入力の向き。</param>
+        protected virtual void OnMoveInput(MoveDirection direction)
         {
         }
 

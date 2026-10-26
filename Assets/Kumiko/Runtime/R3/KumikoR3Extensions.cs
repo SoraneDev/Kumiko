@@ -1,5 +1,3 @@
-#if KUMIKO_R3
-
 using System;
 using R3;
 
@@ -92,6 +90,42 @@ namespace Kumiko.R3
 
 
         /// <summary>
+        /// トグルのオンとオフの切り替わりをObservableとして取得する。
+        /// </summary>
+        /// <remarks>購読した時点で、現在の状態を流す。</remarks>
+        public static Observable<bool> IsOnAsObservable(this KumikoToggle toggle)
+        {
+            return Observable.Create<bool>(observer =>
+            {
+                observer.OnNext(toggle.IsOn);
+
+                Action<bool> handler = observer.OnNext;
+                toggle.IsOnChanged += handler;
+
+                return Disposable.Create(() => toggle.IsOnChanged -= handler);
+            });
+        }
+
+
+        /// <summary>
+        /// スライダーの値の変化をObservableとして取得する。
+        /// </summary>
+        /// <remarks>購読した時点で、現在の値を流す。</remarks>
+        public static Observable<float> ValueAsObservable(this KumikoSlider slider)
+        {
+            return Observable.Create<float>(observer =>
+            {
+                observer.OnNext(slider.Value);
+
+                Action<float> handler = observer.OnNext;
+                slider.ValueChanged += handler;
+
+                return Disposable.Create(() => slider.ValueChanged -= handler);
+            });
+        }
+
+
+        /// <summary>
         /// 入力種別の変化をObservableとして取得する。
         /// </summary>
         /// <remarks>購読した時点で、現在の入力種別を流す。</remarks>
@@ -109,5 +143,3 @@ namespace Kumiko.R3
         }
     }
 }
-
-#endif

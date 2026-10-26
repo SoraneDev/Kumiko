@@ -1,7 +1,9 @@
 {
     "name": "Kumiko.Editor",
     "rootNamespace": "Kumiko.Editor",
-    "references": [],
+    "references": [
+        "GUID:9a270d36ba37ed74485e9fe12fd70233"
+    ],
     "includePlatforms": [
         "Editor"
     ],

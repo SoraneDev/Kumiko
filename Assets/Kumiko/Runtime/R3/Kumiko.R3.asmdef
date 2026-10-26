@@ -11,7 +11,9 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "KUMIKO_R3"
+    ],
     "versionDefines": [
         {
             "name": "com.cysharp.r3",
