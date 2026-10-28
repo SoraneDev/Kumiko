@@ -5,8 +5,8 @@ using UnityEngine.UI;
 namespace Kumiko
 {
     /// <summary>
-    /// KumikoElementの実効的な操作可否をSelectableへ反映する。
-    /// SelectableのNavigationとTransitionは使わないため、無効にする。
+    /// <see cref="KumikoElement" />の実効的な操作可否を<see cref="Selectable" />へ反映する。
+    /// <see cref="Selectable.navigation" />と<see cref="Selectable.transition" />は使わないため、無効にする。
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Selectable))]
@@ -20,7 +20,12 @@ namespace Kumiko
         {
             get
             {
-                return _targetSelectable ??= GetComponent<Selectable>();
+                if (_targetSelectable == null)
+                {
+                    _targetSelectable = GetComponent<Selectable>();
+                }
+
+                return _targetSelectable;
             }
         }
 
@@ -52,6 +57,20 @@ namespace Kumiko
         }
 
 
+#if UNITY_EDITOR
+
+
+        protected override void Reset()
+        {
+            base.Reset();
+
+            DisableSelectableSettings();
+        }
+
+
+#endif
+
+
         private void OnStateChanged(InteractionState state)
         {
             ApplyState(state);
@@ -74,17 +93,5 @@ namespace Kumiko
 
             TargetSelectable.transition = Selectable.Transition.None;
         }
-
-
-#if UNITY_EDITOR
-
-        protected override void Reset()
-        {
-            base.Reset();
-
-            DisableSelectableSettings();
-        }
-
-#endif
     }
 }

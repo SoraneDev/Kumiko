@@ -6,7 +6,10 @@ namespace Kumiko
     public interface IConfirmGate
     {
         /// <summary>最終結果に採用する優先順位。</summary>
-        /// <remarks>複数のGateがPassed以外を返したとき、段階の小さいGate（同じ段階ではInspectorで上のGate）の結果を採用する。</remarks>
+        /// <remarks>
+        /// 複数のGateが<see cref="ConfirmGateResult.Passed" />以外を返したとき、
+        /// 段階の小さいGate（同じ段階ではInspectorで上のGate）の結果を採用する。
+        /// </remarks>
         ConfirmGateStage Stage { get; }
 
 
@@ -14,14 +17,17 @@ namespace Kumiko
         /// Gateが有効かどうかを取得する。
         /// </summary>
         /// <returns>有効な場合はtrue、無効な場合はfalseを返す。</returns>
-        /// <remarks>無効なGateは、Passedとして扱われる。</remarks>
+        /// <remarks>無効なGateは、<see cref="ConfirmGateResult.Passed" />として扱われる。</remarks>
         bool IsActive();
 
 
         /// <summary>
         /// 決定入力を通過させてよいかを評価する。
         /// </summary>
-        /// <returns>通過可能ならPassed、判定途中ならPending、通過拒否ならRejectedを返す。</returns>
+        /// <returns>
+        /// 通過可能なら<see cref="ConfirmGateResult.Passed" />、判定途中なら<see cref="ConfirmGateResult.Pending" />、
+        /// 通過拒否なら<see cref="ConfirmGateResult.Rejected" />を返す。
+        /// </returns>
         /// <remarks>内部状態を変更しない。同じ状態では、何度呼んでも同じ結果を返す。</remarks>
         ConfirmGateResult Evaluate();
 
@@ -29,7 +35,7 @@ namespace Kumiko
         /// <summary>
         /// 最終結果が決まった後に呼ばれ、内部状態を更新する。
         /// </summary>
-        /// <param name="ownResult">自身のEvaluateの結果。</param>
+        /// <param name="ownResult">自身の<see cref="Evaluate" />の結果。</param>
         /// <param name="finalResult">すべてのGateを合わせた最終結果。</param>
         void Commit(ConfirmGateResult ownResult, ConfirmGateResult finalResult);
 

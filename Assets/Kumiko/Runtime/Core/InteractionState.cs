@@ -9,10 +9,10 @@ namespace Kumiko
         /// <summary>ほかのどの状態も成立していない。</summary>
         Normal,
 
-        /// <summary>マウスなどのポインタが重なっている。入力種別がPointerのときだけ表示する。</summary>
+        /// <summary>マウスなどのポインタが重なっている。入力種別が<see cref="InputModality.Pointer" />のときだけ表示する。</summary>
         Hovered,
 
-        /// <summary>選択されている。入力種別がNavigationのときだけ表示する。</summary>
+        /// <summary>選択されている。入力種別が<see cref="InputModality.Navigation" />のときだけ表示する。</summary>
         Focused,
 
         /// <summary>押されている。</summary>

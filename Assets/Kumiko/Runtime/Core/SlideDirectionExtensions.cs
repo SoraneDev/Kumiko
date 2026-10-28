@@ -4,12 +4,12 @@ using UnityEngine.EventSystems;
 namespace Kumiko
 {
     /// <summary>
-    /// SlideDirectionの拡張メソッドを提供する。
+    /// <see cref="SlideDirection" />の拡張メソッドを提供する。
     /// </summary>
     internal static class SlideDirectionExtensions
     {
         /// <summary>
-        /// 値が変化する軸を、Vector2の要素番号で取得する。
+        /// 値が変化する軸を、<see cref="UnityEngine.Vector2" />の要素番号で取得する。
         /// </summary>
         /// <param name="direction">対象の方向。</param>
         /// <returns>横方向なら0、縦方向なら1を返す。</returns>

@@ -6,7 +6,7 @@ namespace Kumiko
 {
     /// <summary>
     /// UIをインタラクション可能なボタンにする。
-    /// Gateを同じGameObjectにアタッチすると、ダブルクリックやクールダウンなどの通過条件を決定入力に付与できる。
+    /// Gateを同じ<see cref="GameObject" />にアタッチすると、ダブルクリックやクールダウンなどの通過条件を決定入力に付与できる。
     /// </summary>
     /// <remarks>Gateは、Awakeの時点でアタッチされているものだけが対象になる。</remarks>
     [AddComponentMenu("Kumiko/KumikoButton")]
@@ -46,7 +46,7 @@ namespace Kumiko
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnConfirmInput()
         {
             Confirm();

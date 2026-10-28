@@ -6,7 +6,7 @@ namespace Kumiko
     /// <summary>
     /// Gateの基底クラス。
     /// </summary>
-    /// <remarks>無効になると、ResetStateで内部状態を初期化する。</remarks>
+    /// <remarks>無効になると、<see cref="ResetState" />で内部状態を初期化する。</remarks>
     [RequireComponent(typeof(KumikoButton))]
     public abstract class KumikoGate : KumikoModule, IConfirmGate
     {

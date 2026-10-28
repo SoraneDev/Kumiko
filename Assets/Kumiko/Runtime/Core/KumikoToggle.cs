@@ -9,8 +9,8 @@ namespace Kumiko
     /// UIを、決定入力でオンとオフを切り替えるトグルにする。
     /// </summary>
     /// <remarks>
-    /// オンのときだけ表示するGraphicを設定すると、オンとオフに合わせてGraphicを有効・無効にする。
-    /// 切り替えの演出を自分で作る場合は、設定せずにIsOnChangedを購読する。
+    /// オンのときだけ表示する<see cref="Graphic" />を設定すると、オンとオフに合わせて<see cref="Graphic" />を有効・無効にする。
+    /// 切り替えの演出を自分で作る場合は、設定せずに<see cref="IsOnChanged" />を購読する。
     /// </remarks>
     [AddComponentMenu("Kumiko/KumikoToggle")]
     public sealed class KumikoToggle : KumikoElement
@@ -23,19 +23,19 @@ namespace Kumiko
         /// オンとオフが切り替わったときに通知される。
         /// </summary>
         /// <remarks>
-        /// SetIsOnWithoutNotifyでの変更では通知されない。
-        /// 購読した時点では通知されないため、現在の状態はIsOnで取得すること。
+        /// <see cref="SetIsOnWithoutNotify" />での変更では通知されない。
+        /// 購読した時点では通知されないため、現在の状態は<see cref="IsOn" />で取得すること。
         /// 不要になったら購読を解除すること。
         /// </remarks>
         public event Action<bool> IsOnChanged;
 
 
         /// <summary>オンかどうか。</summary>
-        /// <remarks>設定した値が現在と異なる場合は、IsOnChangedを通知する。</remarks>
+        /// <remarks>設定した値が現在と異なる場合は、<see cref="IsOnChanged" />を通知する。</remarks>
         public bool IsOn
         {
             get => _isOn;
-            set => SetIsOn(value, true);
+            set => SetIsOn(value, notify: true);
         }
 
 
@@ -48,17 +48,38 @@ namespace Kumiko
         }
 
 
+#if UNITY_EDITOR
+
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+
+            if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this))
+            {
+                return;
+            }
+
+            // OnValidate中にほかのコンポーネントを変更すると警告が出るため、次のエディター更新で反映する。
+            UnityEditor.EditorApplication.delayCall -= ApplyIsOnGraphicDelayed;
+            UnityEditor.EditorApplication.delayCall += ApplyIsOnGraphicDelayed;
+        }
+
+
+#endif
+
+
         /// <summary>
-        /// オンとオフを切り替える。IsOnChangedは通知しない。
+        /// オンとオフを切り替える。<see cref="IsOnChanged" />は通知しない。
         /// </summary>
         /// <param name="isOn">オンにする場合はtrue。</param>
         public void SetIsOnWithoutNotify(bool isOn)
         {
-            SetIsOn(isOn, false);
+            SetIsOn(isOn, notify: false);
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnConfirmInput()
         {
             IsOn = !_isOn;
@@ -67,18 +88,27 @@ namespace Kumiko
 
         private void SetIsOn(bool isOn, bool notify)
         {
-            if (_isOn == isOn) return;
+            if (_isOn == isOn)
+            {
+                return;
+            }
 
             _isOn = isOn;
             ApplyIsOnGraphic();
 
-            if (notify) IsOnChanged?.Invoke(_isOn);
+            if (notify)
+            {
+                IsOnChanged?.Invoke(_isOn);
+            }
         }
 
 
         private void ApplyIsOnGraphic()
         {
-            if (_isOnGraphic == null) return;
+            if (_isOnGraphic == null)
+            {
+                return;
+            }
 
             _isOnGraphic.enabled = _isOn;
         }
@@ -86,25 +116,18 @@ namespace Kumiko
 
 #if UNITY_EDITOR
 
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-
-            if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this)) return;
-
-            // OnValidate中にほかのコンポーネントを変更すると警告が出るため、次のエディター更新で反映する。
-            UnityEditor.EditorApplication.delayCall -= ApplyIsOnGraphicDelayed;
-            UnityEditor.EditorApplication.delayCall += ApplyIsOnGraphicDelayed;
-        }
-
 
         private void ApplyIsOnGraphicDelayed()
         {
             // 呼ばれるまでの間に、破棄されている場合がある。
-            if (this == null) return;
+            if (this == null)
+            {
+                return;
+            }
 
             ApplyIsOnGraphic();
         }
+
 
 #endif
     }

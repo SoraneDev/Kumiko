@@ -14,21 +14,21 @@ namespace Kumiko.Editor
         private const string TogglePrefabPath = "Packages/com.sorane.kumiko/Editor/Prefabs/Toggle.prefab";
 
 
-        [MenuItem("GameObject/Kumiko/Button", false, 0)]
+        [MenuItem("GameObject/Kumiko/Button", isValidateFunction: false, priority: 0)]
         private static void CreateButton(MenuCommand command)
         {
             Create(command, ButtonPrefabPath);
         }
 
 
-        [MenuItem("GameObject/Kumiko/Slider", false, 1)]
+        [MenuItem("GameObject/Kumiko/Slider", isValidateFunction: false, priority: 1)]
         private static void CreateSlider(MenuCommand command)
         {
             Create(command, SliderPrefabPath);
         }
 
 
-        [MenuItem("GameObject/Kumiko/Toggle", false, 2)]
+        [MenuItem("GameObject/Kumiko/Toggle", isValidateFunction: false, priority: 2)]
         private static void CreateToggle(MenuCommand command)
         {
             Create(command, TogglePrefabPath);
@@ -37,11 +37,11 @@ namespace Kumiko.Editor
 
         private static void Create(MenuCommand command, string prefabPath)
         {
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
 
             if (prefab == null)
             {
-                Debug.LogError($"Prefab not found: {prefabPath}");
+                Debug.LogError($"プレハブ： {prefabPath} が見つかりません。");
                 return;
             }
 
@@ -52,18 +52,17 @@ namespace Kumiko.Editor
             // ルートで生成する場合は、シーン内のCanvasを親にする。
             if (parent == null)
             {
-                var canvas = Object.FindFirstObjectByType<Canvas>();
+                Canvas canvas = Object.FindFirstObjectByType<Canvas>();
 
-                if (canvas != null) parent = canvas.gameObject;
+                if (canvas != null)
+                {
+                    parent = canvas.gameObject;
+                }
             }
 
             GameObjectUtility.SetParentAndAlign(instance, parent);
 
-            PrefabUtility.UnpackPrefabInstance(
-                instance,
-                PrefabUnpackMode.Completely,
-                InteractionMode.AutomatedAction
-            );
+            PrefabUtility.UnpackPrefabInstance(instance, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
 
             Undo.RegisterCreatedObjectUndo(instance, $"Create {instance.name}");
 

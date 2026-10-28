@@ -10,7 +10,7 @@ namespace Kumiko
     [AddComponentMenu("Kumiko/DoubleClickGate")]
     public sealed class DoubleClickGate : KumikoGate
     {
-        [SerializeField, Min(0f), Tooltip("1回目から2回目の入力までに許容する秒数")]
+        [SerializeField] [Min(0f)] [Tooltip("1回目から2回目の入力までに許容する秒数")]
         private float _doubleClickInterval = 0.4f;
 
 
@@ -18,18 +18,18 @@ namespace Kumiko
         private bool _hasFirstClick;
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override ConfirmGateStage Stage => ConfirmGateStage.Recognition;
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override ConfirmGateResult Evaluate()
         {
             return IsSecondClick() ? ConfirmGateResult.Passed : ConfirmGateResult.Pending;
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void Commit(ConfirmGateResult ownResult, ConfirmGateResult finalResult)
         {
             if (finalResult == ConfirmGateResult.Passed)
@@ -49,7 +49,7 @@ namespace Kumiko
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void ResetState()
         {
             _hasFirstClick = false;

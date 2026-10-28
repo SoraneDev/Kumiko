@@ -17,8 +17,8 @@ namespace Kumiko
         /// 入力種別が変化したときに通知される。
         /// </summary>
         /// <remarks>
-        /// Lockの開始・解除でも、反映される入力種別が変わったときに通知される。
-        /// 購読した時点では通知されないため、現在の入力種別はModalityで取得すること。
+        /// <see cref="Lock" />の開始・解除でも、反映される入力種別が変わったときに通知される。
+        /// 購読した時点では通知されないため、現在の入力種別は<see cref="Modality" />で取得すること。
         /// 不要になったら購読を解除すること。
         /// </remarks>
         public event Action<InputModality> ModalityChanged;
@@ -28,7 +28,7 @@ namespace Kumiko
         /// 入力種別が変化したときに通知される。
         /// 内部用。利用側の例外の影響を受けないように、先に通知される。
         /// </summary>
-        /// <inheritdoc cref="InputModalityTracker.ModalityChanged" />
+        /// <inheritdoc cref="ModalityChanged" />
         internal event Action<InputModality> InternalModalityChanged;
 
 
@@ -38,14 +38,6 @@ namespace Kumiko
 
         /// <summary>現在の入力種別。</summary>
         public InputModality Modality { get; private set; }
-
-
-        // Unityのドメインリロードを無効にしている場合、静的変数がリセットされないため、明示的にリセットする。
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics()
-        {
-            Current = new InputModalityTracker();
-        }
 
 
         /// <summary>
@@ -81,6 +73,14 @@ namespace Kumiko
         }
 
 
+        // Unityのドメインリロードを無効にしている場合、静的変数がリセットされないため、明示的にリセットする。
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            Current = new InputModalityTracker();
+        }
+
+
         private void Refresh()
         {
             InputModality next = _locked ?? _detected;
@@ -90,7 +90,10 @@ namespace Kumiko
 
         private void SetModality(InputModality next)
         {
-            if (Modality == next) return;
+            if (Modality == next)
+            {
+                return;
+            }
 
             Modality = next;
 
