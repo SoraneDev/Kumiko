@@ -18,18 +18,18 @@ namespace Kumiko
         private bool _hasFirstClick;
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override ConfirmGateStage Stage => ConfirmGateStage.Recognition;
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override ConfirmGateResult Evaluate()
         {
             return IsSecondClick() ? ConfirmGateResult.Passed : ConfirmGateResult.Pending;
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void Commit(ConfirmGateResult ownResult, ConfirmGateResult finalResult)
         {
             if (finalResult == ConfirmGateResult.Passed)
@@ -49,7 +49,7 @@ namespace Kumiko
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void ResetState()
         {
             _hasFirstClick = false;

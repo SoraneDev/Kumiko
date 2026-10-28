@@ -17,7 +17,7 @@ namespace Kumiko.Editor
         /// <param name="script">m_Scriptのプロパティ。</param>
         internal static void DrawScriptField(SerializedProperty script)
         {
-            using (new EditorGUI.DisabledScope(true))
+            using (new EditorGUI.DisabledScope(disabled: true))
             {
                 EditorGUILayout.PropertyField(script);
             }
@@ -25,12 +25,12 @@ namespace Kumiko.Editor
 
 
         /// <summary>
-        /// 方向の欄を描画する。変更された場合は、setDirectionで各対象の方向とレイアウトを変更する。
+        /// 方向の欄を描画する。変更された場合は、<paramref name="setDirection" />で各対象の方向とレイアウトを変更する。
         /// </summary>
         /// <typeparam name="T">方向を持つコンポーネントの型。</typeparam>
         /// <param name="direction">方向のプロパティ。</param>
         /// <param name="setDirection">対象の方向とレイアウトを変更する処理。</param>
-        /// <remarks>レイアウトの変更は子のRectTransformにも及ぶため、階層全体をUndoに記録する。</remarks>
+        /// <remarks>レイアウトの変更は子の<see cref="RectTransform" />にも及ぶため、階層全体をUndoに記録する。</remarks>
         internal static void DrawDirectionField<T>(SerializedProperty direction, Action<T, SlideDirection> setDirection)
             where T : Component
         {
@@ -64,7 +64,9 @@ namespace Kumiko.Editor
         {
             PrefabUtility.RecordPrefabInstancePropertyModifications(target);
 
-            foreach (RectTransform rectTransform in target.GetComponentsInChildren<RectTransform>(true))
+            RectTransform[] rectTransforms = target.GetComponentsInChildren<RectTransform>(includeInactive: true);
+
+            foreach (RectTransform rectTransform in rectTransforms)
             {
                 PrefabUtility.RecordPrefabInstancePropertyModifications(rectTransform);
             }

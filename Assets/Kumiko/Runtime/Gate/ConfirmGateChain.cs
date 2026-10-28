@@ -15,10 +15,10 @@ namespace Kumiko
 
 
         /// <summary>
-        /// 対象のGameObjectからIConfirmGateを取得し、Stageの昇順に並べて格納する。
-        /// 同じStageでは取得した順を保つ。
+        /// 対象の<see cref="GameObject" />から<see cref="IConfirmGate" />を取得し、<see cref="IConfirmGate.Stage" />の昇順に並べて格納する。
+        /// 同じ<see cref="IConfirmGate.Stage" />では取得した順を保つ。
         /// </summary>
-        /// <param name="owner">Gateを持つ対象のGameObject。</param>
+        /// <param name="owner">Gateを持つ対象の<see cref="GameObject" />。</param>
         internal void Collect(GameObject owner)
         {
             _gates = owner.GetComponents<IConfirmGate>().OrderBy(gate => gate.Stage).ToArray();
@@ -29,7 +29,10 @@ namespace Kumiko
         /// <summary>
         /// すべてのGateを評価して最終結果を決め、各Gateの内部状態を更新する。
         /// </summary>
-        /// <returns>すべてのGateを通過した場合はPassed、そうでない場合は最初にPassed以外を返したGateの結果を返す。</returns>
+        /// <returns>
+        /// すべてのGateを通過した場合は<see cref="ConfirmGateResult.Passed" />、
+        /// そうでない場合は最初に<see cref="ConfirmGateResult.Passed" />以外を返したGateの結果を返す。
+        /// </returns>
         internal ConfirmGateResult Resolve()
         {
             ConfirmGateResult finalResult = ConfirmGateResult.Passed;

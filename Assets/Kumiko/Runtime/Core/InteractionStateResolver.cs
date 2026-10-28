@@ -1,19 +1,21 @@
 namespace Kumiko
 {
     /// <summary>
-    /// InteractionFlagsとInputModalityに基づいて、InteractionStateを決定する。
+    /// <see cref="InteractionFlags" />と<see cref="InputModality" />に基づいて、<see cref="InteractionState" />を決定する。
     /// </summary>
     internal static class InteractionStateResolver
     {
         /// <summary>
-        /// 表示するInteractionStateを決定する。
+        /// 表示する<see cref="InteractionState" />を決定する。
         /// </summary>
         /// <param name="flags">インタラクションの状態フラグ。</param>
         /// <param name="modality">入力種別。</param>
-        /// <returns>表示するInteractionStateを返す。</returns>
+        /// <returns>表示する<see cref="InteractionState" />を返す。</returns>
         /// <remarks>
-        /// 優先順位はDisabled → Pressed → 入力種別ごとの状態。
-        /// NavigationではFocused、PointerではHoveredだけを表示し、Touchでは押下以外の状態を表示しない。
+        /// 優先順位は<see cref="InteractionState.Disabled" /> → <see cref="InteractionState.Pressed" /> → 入力種別ごとの状態。
+        /// <see cref="InputModality.Navigation" />では<see cref="InteractionState.Focused" />、
+        /// <see cref="InputModality.Pointer" />では<see cref="InteractionState.Hovered" />だけを表示し、
+        /// <see cref="InputModality.Touch" />では押下以外の状態を表示しない。
         /// </remarks>
         internal static InteractionState Resolve(InteractionFlags flags, InputModality modality)
         {

@@ -5,8 +5,8 @@ using UnityEngine.UI;
 namespace Kumiko
 {
     /// <summary>
-    /// KumikoElementの実効的な操作可否をSelectableへ反映する。
-    /// SelectableのNavigationとTransitionは使わないため、無効にする。
+    /// <see cref="KumikoElement" />の実効的な操作可否を<see cref="Selectable" />へ反映する。
+    /// <see cref="Selectable.navigation" />と<see cref="Selectable.transition" />は使わないため、無効にする。
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(Selectable))]
@@ -16,7 +16,18 @@ namespace Kumiko
         private Selectable _targetSelectable;
 
 
-        private Selectable TargetSelectable => _targetSelectable ??= GetComponent<Selectable>();
+        private Selectable TargetSelectable
+        {
+            get
+            {
+                if (_targetSelectable == null)
+                {
+                    _targetSelectable = GetComponent<Selectable>();
+                }
+
+                return _targetSelectable;
+            }
+        }
 
 
         protected override void Awake()

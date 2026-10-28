@@ -10,9 +10,9 @@ namespace Kumiko
     /// </summary>
     /// <remarks>
     /// 遷移先を設定した方向では、その要素を優先する。
-    /// 遷移先が未設定、または選択できない方向では、Modeに応じて遷移先を自動で探す。
-    /// 自動で探す対象は、DirectionalNavigatorを持ち、同じルートのCanvasにある、選択できる要素だけ。
-    /// 要素がUsesMoveInputでtrueを返す方向（スライダーの値の変更など）では、選択を移さない。
+    /// 遷移先が未設定、または選択できない方向では、<see cref="NavigationMode" />に応じて遷移先を自動で探す。
+    /// 自動で探す対象は、<see cref="DirectionalNavigator" />を持ち、同じルートの<see cref="Canvas" />にある、選択できる要素だけ。
+    /// 要素が<see cref="KumikoElement.UsesMoveInput" />でtrueを返す方向（スライダーの値の変更など）では、選択を移さない。
     /// </remarks>
     [DisallowMultipleComponent]
     [AddComponentMenu("Kumiko/DirectionalNavigator")]
@@ -72,7 +72,7 @@ namespace Kumiko
         /// </summary>
         /// <param name="direction">方向入力の向き。</param>
         /// <returns>選択を移す先の要素。見つからない場合はnullを返す。</returns>
-        /// <remarks>設定した遷移先が選択できる場合はそれを返し、そうでない場合はModeに応じて自動で探す。</remarks>
+        /// <remarks>設定した遷移先が選択できる場合はそれを返し、そうでない場合は<see cref="NavigationMode" />に応じて自動で探す。</remarks>
         public KumikoElement FindTarget(MoveDirection direction)
         {
             KumikoElement manualTarget = GetManualTarget(direction);
@@ -160,8 +160,7 @@ namespace Kumiko
             Vector3 origin,
             Vector3 direction,
             Canvas rootCanvas,
-            out float minDistanceAlong
-        )
+            out float minDistanceAlong)
         {
             KumikoElement nearestTarget = null;
             float bestScore = float.NegativeInfinity;

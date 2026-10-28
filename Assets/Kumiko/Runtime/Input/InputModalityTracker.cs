@@ -17,8 +17,8 @@ namespace Kumiko
         /// 入力種別が変化したときに通知される。
         /// </summary>
         /// <remarks>
-        /// Lockの開始・解除でも、反映される入力種別が変わったときに通知される。
-        /// 購読した時点では通知されないため、現在の入力種別はModalityで取得すること。
+        /// <see cref="Lock" />の開始・解除でも、反映される入力種別が変わったときに通知される。
+        /// 購読した時点では通知されないため、現在の入力種別は<see cref="Modality" />で取得すること。
         /// 不要になったら購読を解除すること。
         /// </remarks>
         public event Action<InputModality> ModalityChanged;
@@ -28,7 +28,7 @@ namespace Kumiko
         /// 入力種別が変化したときに通知される。
         /// 内部用。利用側の例外の影響を受けないように、先に通知される。
         /// </summary>
-        /// <inheritdoc cref="InputModalityTracker.ModalityChanged" />
+        /// <inheritdoc cref="ModalityChanged" />
         internal event Action<InputModality> InternalModalityChanged;
 
 

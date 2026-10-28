@@ -1,7 +1,7 @@
 namespace Kumiko
 {
     /// <summary>
-    /// InteractionFlagsの拡張メソッドを提供する。
+    /// <see cref="InteractionFlags" />の拡張メソッドを提供する。
     /// </summary>
     internal static class InteractionFlagsExtensions
     {

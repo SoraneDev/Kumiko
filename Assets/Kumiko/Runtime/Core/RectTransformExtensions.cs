@@ -4,18 +4,21 @@ using UnityEngine;
 namespace Kumiko
 {
     /// <summary>
-    /// RectTransformの拡張メソッドを提供する。
+    /// <see cref="RectTransform" />の拡張メソッドを提供する。
     /// </summary>
     internal static class RectTransformExtensions
     {
         /// <summary>
-        /// 対象を動かしたり伸縮させたりする範囲として、対象の親のRectTransformを取得する。
+        /// 対象を動かしたり伸縮させたりする範囲として、対象の親の<see cref="RectTransform" />を取得する。
         /// </summary>
         /// <param name="target">動かす対象。</param>
-        /// <param name="owner">対象を動かすコンポーネントのTransform。</param>
-        /// <param name="area">対象の親のRectTransform。</param>
-        /// <returns>取得できた場合はtrue、対象が未設定・ownerと同じ・親がRectTransformでない場合はfalseを返す。</returns>
-        /// <remarks>ownerと同じ対象は、自身のレイアウトを書き換えてしまうため扱わない。</remarks>
+        /// <param name="owner">対象を動かすコンポーネントの<see cref="Transform" />。</param>
+        /// <param name="area">対象の親の<see cref="RectTransform" />。</param>
+        /// <returns>
+        /// 取得できた場合はtrue、
+        /// 対象が未設定・<paramref name="owner" />と同じ・親が<see cref="RectTransform" />でない場合はfalseを返す。
+        /// </returns>
+        /// <remarks><paramref name="owner" />と同じ対象は、自身のレイアウトを書き換えてしまうため扱わない。</remarks>
         internal static bool TryGetParentArea(this RectTransform target, Transform owner, out RectTransform area)
         {
             area = null;
@@ -33,7 +36,7 @@ namespace Kumiko
         /// <summary>
         /// スクリーン座標を、対象のローカル座標に変換する。
         /// </summary>
-        /// <param name="rect">変換先のRectTransform。</param>
+        /// <param name="rect">変換先の<see cref="RectTransform" />。</param>
         /// <param name="screenPosition">変換するスクリーン座標。</param>
         /// <param name="eventCamera">イベントを受けたカメラ。Screen Space - Overlayの場合はnull。</param>
         /// <param name="localPosition">変換したローカル座標。</param>
@@ -42,10 +45,12 @@ namespace Kumiko
             this RectTransform rect,
             Vector2 screenPosition,
             Camera eventCamera,
-            out Vector2 localPosition
-        )
+            out Vector2 localPosition)
         {
-            return RectTransformUtility.ScreenPointToLocalPointInRectangle(rect, screenPosition, eventCamera,
+            return RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                rect,
+                screenPosition,
+                eventCamera,
                 out localPosition);
         }
 
@@ -53,7 +58,7 @@ namespace Kumiko
         /// <summary>
         /// スクリーン座標が、対象の範囲内にあるかどうかを取得する。
         /// </summary>
-        /// <param name="rect">判定するRectTransform。</param>
+        /// <param name="rect">判定する<see cref="RectTransform" />。</param>
         /// <param name="screenPosition">判定するスクリーン座標。</param>
         /// <param name="eventCamera">イベントを受けたカメラ。Screen Space - Overlayの場合はnull。</param>
         /// <returns>範囲内の場合はtrue、範囲外の場合はfalseを返す。</returns>
@@ -66,7 +71,7 @@ namespace Kumiko
         /// <summary>
         /// 方向の変化に合わせて、対象と子のレイアウトを入れ替え・反転する。
         /// </summary>
-        /// <param name="rect">レイアウトを変更するRectTransform。</param>
+        /// <param name="rect">レイアウトを変更する<see cref="RectTransform" />。</param>
         /// <param name="previousDirection">変更前の方向。</param>
         /// <param name="direction">変更後の方向。</param>
         /// <remarks>
@@ -75,7 +80,9 @@ namespace Kumiko
         /// 対象のアンカーが1点の場合は、置いた位置を保ったままピボットを中心に入れ替える。
         /// 親に合わせて伸縮している場合は、対象のアンカーも入れ替える。
         /// </remarks>
-        internal static void FlipLayout(this RectTransform rect, SlideDirection previousDirection,
+        internal static void FlipLayout(
+            this RectTransform rect,
+            SlideDirection previousDirection,
             SlideDirection direction)
         {
             // 伸縮するアンカーのまま大きさだけを入れ替えると、幅や高さが0になって表示されなくなるため、

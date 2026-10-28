@@ -11,7 +11,7 @@ namespace Kumiko
     /// </summary>
     /// <remarks>
     /// 値に合わせて、塗りとつまみのアンカーを書き換えて表示する。
-    /// 塗りのImageがFilledの場合は、アンカーの代わりにfillAmountを書き換える。
+    /// 塗りの<see cref="Image" />が<see cref="Image.Type.Filled" />の場合は、アンカーの代わりに<see cref="Image.fillAmount" />を書き換える。
     /// </remarks>
     [AddComponentMenu("Kumiko/KumikoSlider")]
     public sealed class KumikoSlider : KumikoElement, IInitializePotentialDragHandler, IDragHandler
@@ -26,7 +26,7 @@ namespace Kumiko
         [SerializeField] [Min(0f)] private float _stepSize = 0.1f;
 
 
-        private DrivenRectTransformTracker _tracker = new();
+        private DrivenRectTransformTracker _tracker;
         private Vector2 _dragOffset;
 
 
@@ -34,19 +34,19 @@ namespace Kumiko
         /// 値が変化したときに通知される。
         /// </summary>
         /// <remarks>
-        /// SetValueWithoutNotifyでの変更では通知されない。
-        /// 購読した時点では通知されないため、現在の値はValueで取得すること。
+        /// <see cref="SetValueWithoutNotify" />での変更では通知されない。
+        /// 購読した時点では通知されないため、現在の値は<see cref="Value" />で取得すること。
         /// 不要になったら購読を解除すること。
         /// </remarks>
         public event Action<float> ValueChanged;
 
 
         /// <summary>現在の値。</summary>
-        /// <remarks>設定した値は範囲内に収めてから反映し、変化した場合はValueChangedを通知する。</remarks>
+        /// <remarks>設定した値は範囲内に収めてから反映し、変化した場合は<see cref="ValueChanged" />を通知する。</remarks>
         public float Value
         {
             get => _value;
-            set => SetValue(value, true);
+            set => SetValue(value, notify: true);
         }
 
 
@@ -59,35 +59,35 @@ namespace Kumiko
 
 
         /// <summary>値の最小値。</summary>
-        /// <remarks>変更によって現在の値が範囲外になった場合は、範囲内に収めてValueChangedを通知する。</remarks>
+        /// <remarks>変更によって現在の値が範囲外になった場合は、範囲内に収めて<see cref="ValueChanged" />を通知する。</remarks>
         public float MinValue
         {
             get => _minValue;
             set
             {
                 _minValue = value;
-                SetValue(_value, true);
+                SetValue(_value, notify: true);
                 UpdateVisuals();
             }
         }
 
 
         /// <summary>値の最大値。</summary>
-        /// <remarks>変更によって現在の値が範囲外になった場合は、範囲内に収めてValueChangedを通知する。</remarks>
+        /// <remarks>変更によって現在の値が範囲外になった場合は、範囲内に収めて<see cref="ValueChanged" />を通知する。</remarks>
         public float MaxValue
         {
             get => _maxValue;
             set
             {
                 _maxValue = value;
-                SetValue(_value, true);
+                SetValue(_value, notify: true);
                 UpdateVisuals();
             }
         }
 
 
         /// <summary>値が最小から最大へ向かう方向。</summary>
-        /// <remarks>変更する場合は、SetDirectionを使う。</remarks>
+        /// <remarks>変更する場合は、<see cref="SetDirection" />を使う。</remarks>
         public SlideDirection Direction => _direction;
 
 
@@ -161,12 +161,12 @@ namespace Kumiko
 
 
         /// <summary>
-        /// 値を変更する。ValueChangedは通知しない。
+        /// 値を変更する。<see cref="ValueChanged" />は通知しない。
         /// </summary>
         /// <param name="value">設定する値。範囲内に収めてから反映する。</param>
         public void SetValueWithoutNotify(float value)
         {
-            SetValue(value, false);
+            SetValue(value, notify: false);
         }
 
 
@@ -193,14 +193,14 @@ namespace Kumiko
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected internal override bool UsesMoveInput(MoveDirection direction)
         {
             return _direction.GetStepSign(direction) != 0;
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnPointerDownInput(PointerEventData eventData)
         {
             _dragOffset = Vector2.zero;
@@ -225,7 +225,7 @@ namespace Kumiko
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         protected override void OnMoveInput(MoveDirection direction)
         {
             Value += _direction.GetStepSign(direction) * StepSize;

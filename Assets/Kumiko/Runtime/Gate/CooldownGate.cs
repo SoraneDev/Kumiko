@@ -18,18 +18,18 @@ namespace Kumiko
         private float _nextAvailableTime;
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override ConfirmGateStage Stage => ConfirmGateStage.Restriction;
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override ConfirmGateResult Evaluate()
         {
             return Time.unscaledTime < _nextAvailableTime ? ConfirmGateResult.Rejected : ConfirmGateResult.Passed;
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void Commit(ConfirmGateResult ownResult, ConfirmGateResult finalResult)
         {
             // 決定が確定したときだけ、クールダウンを始める。
@@ -42,7 +42,7 @@ namespace Kumiko
         }
 
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public override void ResetState()
         {
             _nextAvailableTime = 0f;

@@ -10,7 +10,7 @@ namespace Kumiko.R3
     public static class KumikoR3Extensions
     {
         /// <summary>
-        /// 表示状態の変化をObservableとして取得する。
+        /// 表示状態の変化を<see cref="Observable{T}" />として取得する。
         /// </summary>
         /// <remarks>購読した時点で、現在の状態を流す。</remarks>
         public static Observable<InteractionState> StateAsObservable(this KumikoElement element)
@@ -28,7 +28,7 @@ namespace Kumiko.R3
 
 
         /// <summary>
-        /// 決定入力がGateを通過したことを、Observableとして取得する。
+        /// 決定入力がGateを通過したことを、<see cref="Observable{T}" />として取得する。
         /// </summary>
         [Obsolete]
         public static Observable<Unit> OnConfirmAsObservable(this KumikoButton button)
@@ -44,7 +44,7 @@ namespace Kumiko.R3
 
 
         /// <summary>
-        /// 決定入力がGateを通過したことを、Observableとして取得する。
+        /// 決定入力がGateを通過したことを、<see cref="Observable{T}" />として取得する。
         /// </summary>
         public static Observable<Unit> ConfirmAsObservable(this KumikoButton button)
         {
@@ -59,7 +59,7 @@ namespace Kumiko.R3
 
 
         /// <summary>
-        /// 決定入力がGateに拒否されたことを、Observableとして取得する。
+        /// 決定入力がGateに拒否されたことを、<see cref="Observable{T}" />として取得する。
         /// </summary>
         [Obsolete]
         public static Observable<Unit> OnConfirmRejectedAsObservable(this KumikoButton button)
@@ -75,7 +75,7 @@ namespace Kumiko.R3
 
 
         /// <summary>
-        /// 決定入力がGateに拒否されたことを、Observableとして取得する。
+        /// 決定入力がGateに拒否されたことを、<see cref="Observable{T}" />として取得する。
         /// </summary>
         public static Observable<Unit> ConfirmRejectedAsObservable(this KumikoButton button)
         {
@@ -90,7 +90,7 @@ namespace Kumiko.R3
 
 
         /// <summary>
-        /// トグルのオンとオフの切り替わりをObservableとして取得する。
+        /// トグルのオンとオフの切り替わりを<see cref="Observable{T}" />として取得する。
         /// </summary>
         /// <remarks>購読した時点で、現在の状態を流す。</remarks>
         public static Observable<bool> IsOnAsObservable(this KumikoToggle toggle)
@@ -108,7 +108,7 @@ namespace Kumiko.R3
 
 
         /// <summary>
-        /// スライダーの値の変化をObservableとして取得する。
+        /// スライダーの値の変化を<see cref="Observable{T}" />として取得する。
         /// </summary>
         /// <remarks>購読した時点で、現在の値を流す。</remarks>
         public static Observable<float> ValueAsObservable(this KumikoSlider slider)
@@ -126,7 +126,7 @@ namespace Kumiko.R3
 
 
         /// <summary>
-        /// 入力種別の変化をObservableとして取得する。
+        /// 入力種別の変化を<see cref="Observable{T}" />として取得する。
         /// </summary>
         /// <remarks>購読した時点で、現在の入力種別を流す。</remarks>
         public static Observable<InputModality> ModalityAsObservable(this InputModalityTracker tracker)

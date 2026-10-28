@@ -9,7 +9,7 @@ namespace Kumiko
     /// <summary>
     /// UIをインタラクション可能にする。
     /// 継承してボタンなどの機能を追加できる。
-    /// また、モジュールを同じGameObjectにアタッチして機能を拡張できる。
+    /// また、モジュールを同じ<see cref="GameObject" />にアタッチして機能を拡張できる。
     /// </summary>
     [SelectionBase]
     [DisallowMultipleComponent]
@@ -37,7 +37,7 @@ namespace Kumiko
         /// <remarks>
         /// 実効的な操作可能状態、ポインタ・選択の入力、入力種別の切り替えで変化する。
         /// Submit時は、押下と解除が続けて通知される。
-        /// 購読した時点では通知されないため、現在の状態はStateで取得すること。
+        /// 購読した時点では通知されないため、現在の状態は<see cref="State" />で取得すること。
         /// 不要になったら購読を解除すること。
         /// </remarks>
         public event Action<InteractionState> StateChanged;
@@ -47,7 +47,7 @@ namespace Kumiko
         /// 表示状態が変化したときに通知される。
         /// 内部用。利用側の例外の影響を受けないように、先に通知される。
         /// </summary>
-        /// <inheritdoc cref="StateChanged"/>
+        /// <inheritdoc cref="StateChanged" />
         internal event Action<InteractionState> InternalStateChanged;
 
 
@@ -55,8 +55,8 @@ namespace Kumiko
         public InteractionState State { get; private set; }
 
 
-        /// <summary>自身の操作可能状態。CanvasGroupの状態は含まない。</summary>
-        /// <remarks>実効的な操作可能状態はIsInteractableで確認すること。</remarks>
+        /// <summary>自身の操作可能状態。<see cref="CanvasGroup" />の状態は含まない。</summary>
+        /// <remarks>実効的な操作可能状態は<see cref="IsInteractable" />で確認すること。</remarks>
         public bool Interactable
         {
             get => _interactable;
@@ -295,7 +295,7 @@ namespace Kumiko
 
 
         /// <summary>
-        /// 自身とCanvasGroupによる操作可否を考慮した、実効的な操作可能状態を取得する。
+        /// 自身と<see cref="CanvasGroup" />による操作可否を考慮した、実効的な操作可能状態を取得する。
         /// </summary>
         /// <returns>操作可能な場合はtrue、操作不可能な場合はfalseを返す。</returns>
         public bool IsInteractable()
@@ -310,7 +310,7 @@ namespace Kumiko
         /// </summary>
         /// <param name="direction">方向入力の向き。</param>
         /// <returns>自身の操作に使う場合はtrue、使わない場合はfalseを返す。</returns>
-        /// <remarks>trueを返した方向の入力を受けると、OnMoveInputが呼ばれる。</remarks>
+        /// <remarks>trueを返した方向の入力を受けると、<see cref="OnMoveInput" />が呼ばれる。</remarks>
         protected internal virtual bool UsesMoveInput(MoveDirection direction)
         {
             return false;
@@ -331,14 +331,14 @@ namespace Kumiko
         /// 派生クラスで上書きして、押した位置に応じた処理を実装する。基底は何もしない。
         /// </summary>
         /// <param name="eventData">押下のイベント情報。</param>
-        /// <remarks>呼ばれる時点で、表示状態はPressedになっている。</remarks>
+        /// <remarks>呼ばれる時点で、表示状態は<see cref="InteractionState.Pressed" />になっている。</remarks>
         protected virtual void OnPointerDownInput(PointerEventData eventData)
         {
         }
 
 
         /// <summary>
-        /// UsesMoveInputでtrueを返した方向入力を、操作可能な状態で受けたときに呼ばれる。
+        /// <see cref="UsesMoveInput" />でtrueを返した方向入力を、操作可能な状態で受けたときに呼ばれる。
         /// 派生クラスで上書きして、方向入力による処理を実装する。基底は何もしない。
         /// </summary>
         /// <param name="direction">方向入力の向き。</param>
@@ -405,7 +405,7 @@ namespace Kumiko
                 return;
             }
 
-            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(selected: null);
         }
 
 

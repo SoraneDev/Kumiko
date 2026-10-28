@@ -5,8 +5,8 @@ using UnityEngine;
 namespace Kumiko.Editor
 {
     /// <summary>
-    /// KumikoSliderのInspectorを拡張する。
-    /// 方向を変更したときに、Unity標準のSliderと同じようにレイアウトも合わせて変更する。
+    /// <see cref="KumikoSlider" />のInspectorを拡張する。
+    /// 方向を変更したときに、Unity標準の<see cref="UnityEngine.UI.Slider" />と同じようにレイアウトも合わせて変更する。
     /// </summary>
     [CustomEditor(typeof(KumikoSlider))]
     [CanEditMultipleObjects]
@@ -54,14 +54,12 @@ namespace Kumiko.Editor
             {
                 EditorGUILayout.HelpBox(
                     "Fill RectかHandle Rectの少なくとも一方を設定してください。それぞれ親のRectTransformの範囲内で伸縮・移動します。",
-                    MessageType.Info
-                );
+                    MessageType.Info);
             }
 
             KumikoEditorGUI.DrawDirectionField<KumikoSlider>(
                 _direction,
-                (slider, direction) => slider.SetDirection(direction, flipsLayout: true)
-            );
+                (slider, direction) => slider.SetDirection(direction, flipsLayout: true));
 
             DrawRangeFields();
             EditorGUILayout.PropertyField(_wholeNumbers);
