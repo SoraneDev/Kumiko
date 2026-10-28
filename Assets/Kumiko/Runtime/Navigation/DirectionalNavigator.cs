@@ -18,12 +18,10 @@ namespace Kumiko
     [AddComponentMenu("Kumiko/DirectionalNavigator")]
     public sealed class DirectionalNavigator : KumikoModule, IMoveHandler
     {
-        [SerializeField, Tooltip("遷移先が未設定、または選択できない方向で、遷移先を自動で探す範囲")]
+        [SerializeField] [Tooltip("遷移先が未設定、または選択できない方向で、遷移先を自動で探す範囲")]
         private NavigationMode _mode = NavigationMode.Manual;
-
-        [SerializeField, Tooltip("HorizontalかVerticalのとき、端から反対側の端へ回り込むかどうか")]
+        [SerializeField] [Tooltip("HorizontalかVerticalのとき、端から反対側の端へ回り込むかどうか")]
         private bool _wrapAround;
-
         [SerializeField] private KumikoElement _selectOnUp;
         [SerializeField] private KumikoElement _selectOnDown;
         [SerializeField] private KumikoElement _selectOnLeft;
@@ -32,14 +30,6 @@ namespace Kumiko
 
         // 遷移先を自動で探すときの候補として、有効なDirectionalNavigatorを登録する。
         private static readonly List<DirectionalNavigator> s_activeNavigators = new();
-
-
-        // Unityのドメインリロードを無効にしている場合、静的変数がリセットされないため、明示的にリセットする。
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics()
-        {
-            s_activeNavigators.Clear();
-        }
 
 
         protected override void OnEnable()
@@ -61,11 +51,17 @@ namespace Kumiko
         public void OnMove(AxisEventData eventData)
         {
             // 要素自身が操作に使う方向では、値の変更と選択の移動が同時に起きないように選択を移さない。
-            if (Element.UsesMoveInput(eventData.moveDir)) return;
+            if (Element.UsesMoveInput(eventData.moveDir))
+            {
+                return;
+            }
 
             KumikoElement target = FindTarget(eventData.moveDir);
 
-            if (target == null) return;
+            if (target == null)
+            {
+                return;
+            }
 
             eventData.selectedObject = target.gameObject;
         }
@@ -81,9 +77,20 @@ namespace Kumiko
         {
             KumikoElement manualTarget = GetManualTarget(direction);
 
-            if (CanSelect(manualTarget)) return manualTarget;
+            if (CanSelect(manualTarget))
+            {
+                return manualTarget;
+            }
 
             return IsAutomaticDirection(direction) ? FindAutomaticTarget(direction) : null;
+        }
+
+
+        // Unityのドメインリロードを無効にしている場合、静的変数がリセットされないため、明示的にリセットする。
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            s_activeNavigators.Clear();
         }
 
 
@@ -125,18 +132,23 @@ namespace Kumiko
             var rectTransform = (RectTransform)transform;
             Vector3 origin = rectTransform.TransformPoint(GetEdgeCenter(rectTransform, localDirection));
 
-            KumikoElement target = FindNearestInDirection(origin, worldDirection, rootCanvas, out float minDistanceAlong);
+            KumikoElement target =
+                FindNearestInDirection(origin, worldDirection, rootCanvas, out float minDistanceAlong);
 
+            bool isLinearMode = _mode is NavigationMode.Horizontal or NavigationMode.Vertical;
             // 前方に見つからず、後ろに要素がある場合だけ回り込む。
-            bool wrapsAround = _wrapAround && (_mode is NavigationMode.Horizontal or NavigationMode.Vertical);
+            bool wrapsAround = _wrapAround && isLinearMode;
 
-            if (target != null || !wrapsAround || minDistanceAlong >= 0f) return target;
+            if (target != null || !wrapsAround || minDistanceAlong >= 0f)
+            {
+                return target;
+            }
 
             // 自身が反対側の端のさらに外にあるとして、同じ向きに探し直す。
             // 起点を、後ろで最も遠い要素の位置から、自身の長さ1つ分だけ外側に置く。
             Vector3 backEdge = rectTransform.TransformPoint(GetEdgeCenter(rectTransform, -localDirection));
             float ownLength = Vector3.Dot(worldDirection, origin - backEdge);
-            Vector3 wrappedOrigin = origin + worldDirection * (minDistanceAlong - ownLength);
+            Vector3 wrappedOrigin = origin + (worldDirection * (minDistanceAlong - ownLength));
 
             return FindNearestInDirection(wrappedOrigin, worldDirection, rootCanvas, out _);
         }
@@ -157,7 +169,10 @@ namespace Kumiko
 
             foreach (DirectionalNavigator candidate in s_activeNavigators)
             {
-                if (!IsCandidate(candidate, rootCanvas)) continue;
+                if (!IsCandidate(candidate, rootCanvas))
+                {
+                    continue;
+                }
 
                 var candidateRect = (RectTransform)candidate.transform;
                 Vector3 toCandidate = candidateRect.TransformPoint(candidateRect.rect.center) - origin;
@@ -167,7 +182,10 @@ namespace Kumiko
                 minDistanceAlong = Mathf.Min(minDistanceAlong, distanceAlong);
 
                 // 後ろや真横にある要素は対象外。距離が0の要素を除くことで、下の割り算も安全になる。
-                if (distanceAlong <= 0f) continue;
+                if (distanceAlong <= 0f)
+                {
+                    continue;
+                }
 
                 // 近いほど、また向きからのずれが小さいほど高く評価する。
                 // この値は「cos(ずれの角度) / 距離」と等しく、ずれと距離を1つの値で比べられる。
@@ -186,7 +204,10 @@ namespace Kumiko
 
         private bool IsCandidate(DirectionalNavigator candidate, Canvas rootCanvas)
         {
-            if (candidate == this || !CanSelect(candidate.Element)) return false;
+            if (candidate == this || !CanSelect(candidate.Element))
+            {
+                return false;
+            }
 
             // 別のCanvasの要素とは座標を正しく比べられないため、同じルートのCanvasにある要素だけを対象にする。
             return GetRootCanvas(candidate) == rootCanvas;

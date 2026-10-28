@@ -37,13 +37,19 @@ namespace Kumiko.Editor
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(direction);
 
-            if (!EditorGUI.EndChangeCheck()) return;
+            if (!EditorGUI.EndChangeCheck())
+            {
+                return;
+            }
 
             var nextDirection = (SlideDirection)direction.enumValueIndex;
 
             foreach (Object targetObject in direction.serializedObject.targetObjects)
             {
-                if (targetObject is not T target) continue;
+                if (targetObject is not T target)
+                {
+                    continue;
+                }
 
                 Undo.RegisterFullObjectHierarchyUndo(target.gameObject, "Change Direction");
                 setDirection(target, nextDirection);

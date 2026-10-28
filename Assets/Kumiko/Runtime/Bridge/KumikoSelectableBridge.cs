@@ -16,13 +16,7 @@ namespace Kumiko
         private Selectable _targetSelectable;
 
 
-        private Selectable TargetSelectable
-        {
-            get
-            {
-                return _targetSelectable ??= GetComponent<Selectable>();
-            }
-        }
+        private Selectable TargetSelectable => _targetSelectable ??= GetComponent<Selectable>();
 
 
         protected override void Awake()
@@ -52,6 +46,20 @@ namespace Kumiko
         }
 
 
+#if UNITY_EDITOR
+
+
+        protected override void Reset()
+        {
+            base.Reset();
+
+            DisableSelectableSettings();
+        }
+
+
+#endif
+
+
         private void OnStateChanged(InteractionState state)
         {
             ApplyState(state);
@@ -74,17 +82,5 @@ namespace Kumiko
 
             TargetSelectable.transition = Selectable.Transition.None;
         }
-
-
-#if UNITY_EDITOR
-
-        protected override void Reset()
-        {
-            base.Reset();
-
-            DisableSelectableSettings();
-        }
-
-#endif
     }
 }

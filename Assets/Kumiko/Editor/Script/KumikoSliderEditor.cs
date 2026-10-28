@@ -78,12 +78,18 @@ namespace Kumiko.Editor
             EditorGUI.BeginChangeCheck();
             float minValue = DrawDelayedFloatField(_minValue);
 
-            if (EditorGUI.EndChangeCheck() && minValue <= _maxValue.floatValue) _minValue.floatValue = minValue;
+            if (EditorGUI.EndChangeCheck() && minValue <= _maxValue.floatValue)
+            {
+                _minValue.floatValue = minValue;
+            }
 
             EditorGUI.BeginChangeCheck();
             float maxValue = DrawDelayedFloatField(_maxValue);
 
-            if (EditorGUI.EndChangeCheck() && maxValue >= _minValue.floatValue) _maxValue.floatValue = maxValue;
+            if (EditorGUI.EndChangeCheck() && maxValue >= _minValue.floatValue)
+            {
+                _maxValue.floatValue = maxValue;
+            }
         }
 
 

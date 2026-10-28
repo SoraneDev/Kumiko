@@ -37,7 +37,7 @@ namespace Kumiko.Editor
 
         private static void Create(MenuCommand command, string prefabPath)
         {
-            var prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
 
             if (prefab == null)
             {
@@ -52,9 +52,12 @@ namespace Kumiko.Editor
             // ルートで生成する場合は、シーン内のCanvasを親にする。
             if (parent == null)
             {
-                var canvas = Object.FindFirstObjectByType<Canvas>();
+                Canvas canvas = Object.FindFirstObjectByType<Canvas>();
 
-                if (canvas != null) parent = canvas.gameObject;
+                if (canvas != null)
+                {
+                    parent = canvas.gameObject;
+                }
             }
 
             GameObjectUtility.SetParentAndAlign(instance, parent);

@@ -48,6 +48,27 @@ namespace Kumiko
         }
 
 
+#if UNITY_EDITOR
+
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+
+            if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this))
+            {
+                return;
+            }
+
+            // OnValidate中にほかのコンポーネントを変更すると警告が出るため、次のエディター更新で反映する。
+            UnityEditor.EditorApplication.delayCall -= ApplyIsOnGraphicDelayed;
+            UnityEditor.EditorApplication.delayCall += ApplyIsOnGraphicDelayed;
+        }
+
+
+#endif
+
+
         /// <summary>
         /// オンとオフを切り替える。IsOnChangedは通知しない。
         /// </summary>
@@ -67,18 +88,27 @@ namespace Kumiko
 
         private void SetIsOn(bool isOn, bool notify)
         {
-            if (_isOn == isOn) return;
+            if (_isOn == isOn)
+            {
+                return;
+            }
 
             _isOn = isOn;
             ApplyIsOnGraphic();
 
-            if (notify) IsOnChanged?.Invoke(_isOn);
+            if (notify)
+            {
+                IsOnChanged?.Invoke(_isOn);
+            }
         }
 
 
         private void ApplyIsOnGraphic()
         {
-            if (_isOnGraphic == null) return;
+            if (_isOnGraphic == null)
+            {
+                return;
+            }
 
             _isOnGraphic.enabled = _isOn;
         }
@@ -86,25 +116,18 @@ namespace Kumiko
 
 #if UNITY_EDITOR
 
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-
-            if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this)) return;
-
-            // OnValidate中にほかのコンポーネントを変更すると警告が出るため、次のエディター更新で反映する。
-            UnityEditor.EditorApplication.delayCall -= ApplyIsOnGraphicDelayed;
-            UnityEditor.EditorApplication.delayCall += ApplyIsOnGraphicDelayed;
-        }
-
 
         private void ApplyIsOnGraphicDelayed()
         {
             // 呼ばれるまでの間に、破棄されている場合がある。
-            if (this == null) return;
+            if (this == null)
+            {
+                return;
+            }
 
             ApplyIsOnGraphic();
         }
+
 
 #endif
     }

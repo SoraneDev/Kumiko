@@ -11,8 +11,7 @@ namespace Kumiko
     [AddComponentMenu("Kumiko/CooldownGate")]
     public sealed class CooldownGate : KumikoGate
     {
-        [FormerlySerializedAs("_cooldownTime")]
-        [SerializeField, Min(0f), Tooltip("決定後、次の決定を受け付けるまでの秒数")]
+        [FormerlySerializedAs("_cooldownTime")] [SerializeField] [Min(0f)] [Tooltip("決定後、次の決定を受け付けるまでの秒数")]
         private float _cooldownDuration = 1f;
 
 
@@ -34,7 +33,10 @@ namespace Kumiko
         public override void Commit(ConfirmGateResult ownResult, ConfirmGateResult finalResult)
         {
             // 決定が確定したときだけ、クールダウンを始める。
-            if (finalResult != ConfirmGateResult.Passed) return;
+            if (finalResult != ConfirmGateResult.Passed)
+            {
+                return;
+            }
 
             _nextAvailableTime = Time.unscaledTime + _cooldownDuration;
         }

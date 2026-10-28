@@ -20,7 +20,10 @@ namespace Kumiko
         {
             area = null;
 
-            if (target == null || target == owner) return false;
+            if (target == null || target == owner)
+            {
+                return false;
+            }
 
             area = target.parent as RectTransform;
             return area != null;
@@ -42,7 +45,8 @@ namespace Kumiko
             out Vector2 localPosition
         )
         {
-            return RectTransformUtility.ScreenPointToLocalPointInRectangle(rect, screenPosition, eventCamera, out localPosition);
+            return RectTransformUtility.ScreenPointToLocalPointInRectangle(rect, screenPosition, eventCamera,
+                out localPosition);
         }
 
 
@@ -71,7 +75,8 @@ namespace Kumiko
         /// 対象のアンカーが1点の場合は、置いた位置を保ったままピボットを中心に入れ替える。
         /// 親に合わせて伸縮している場合は、対象のアンカーも入れ替える。
         /// </remarks>
-        internal static void FlipLayout(this RectTransform rect, SlideDirection previousDirection, SlideDirection direction)
+        internal static void FlipLayout(this RectTransform rect, SlideDirection previousDirection,
+            SlideDirection direction)
         {
             // 伸縮するアンカーのまま大きさだけを入れ替えると、幅や高さが0になって表示されなくなるため、
             // アンカーが1点の場合だけ、アンカーと位置を保つ。
@@ -79,13 +84,13 @@ namespace Kumiko
 
             if (previousDirection.GetAxisIndex() != direction.GetAxisIndex())
             {
-                RectTransformUtility.FlipLayoutAxes(rect, keepPositioning: keepsPosition, recursive: true);
+                RectTransformUtility.FlipLayoutAxes(rect, keepsPosition, recursive: true);
             }
 
             if (previousDirection.IsReversed() != direction.IsReversed())
             {
                 int axis = direction.GetAxisIndex();
-                RectTransformUtility.FlipLayoutOnAxis(rect, axis, keepPositioning: keepsPosition, recursive: true);
+                RectTransformUtility.FlipLayoutOnAxis(rect, axis, keepsPosition, recursive: true);
             }
         }
     }

@@ -17,8 +17,15 @@ namespace Kumiko
         /// </remarks>
         internal static InteractionState Resolve(InteractionFlags flags, InputModality modality)
         {
-            if (flags.HasAny(InteractionFlags.Disabled)) return InteractionState.Disabled;
-            if (flags.HasAny(InteractionFlags.Pressed)) return InteractionState.Pressed;
+            if (flags.HasAny(InteractionFlags.Disabled))
+            {
+                return InteractionState.Disabled;
+            }
+
+            if (flags.HasAny(InteractionFlags.Pressed))
+            {
+                return InteractionState.Pressed;
+            }
 
             switch (modality)
             {

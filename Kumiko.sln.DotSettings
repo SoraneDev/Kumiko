@@ -62,6 +62,16 @@
             &lt;/Entry.Match&gt;
         &lt;/Entry&gt;
 
+        &lt;Entry DisplayName="コンストラクタ"&gt;
+            &lt;Entry.Match&gt;
+                &lt;Kind Is="Constructor" /&gt;
+            &lt;/Entry.Match&gt;
+
+            &lt;Entry.SortBy&gt;
+                &lt;Static /&gt;
+            &lt;/Entry.SortBy&gt;
+        &lt;/Entry&gt;
+
         &lt;Entry DisplayName="イベント"&gt;
             &lt;Entry.Match&gt;
                 &lt;Kind Is="Event" /&gt;
@@ -85,16 +95,6 @@
             &lt;/Entry.SortBy&gt;
         &lt;/Entry&gt;
 
-        &lt;Entry DisplayName="コンストラクタ"&gt;
-            &lt;Entry.Match&gt;
-                &lt;Kind Is="Constructor" /&gt;
-            &lt;/Entry.Match&gt;
-
-            &lt;Entry.SortBy&gt;
-                &lt;Static /&gt;
-            &lt;/Entry.SortBy&gt;
-        &lt;/Entry&gt;
-
         &lt;!-- 組み込みの並び順は実行順と異なるため、並べ替えない（実行順で書く） --&gt;
         &lt;Entry DisplayName="Unityイベント関数"&gt;
             &lt;Entry.Match&gt;
@@ -102,6 +102,7 @@
             &lt;/Entry.Match&gt;
         &lt;/Entry&gt;
 
+        &lt;!-- インターフェース名の順では意味のまとまりが崩れるため、並べ替えない（書いた順を保つ） --&gt;
         &lt;Entry DisplayName="インターフェースの実装"&gt;
             &lt;Entry.Match&gt;
                 &lt;And&gt;
@@ -109,10 +110,6 @@
                     &lt;ImplementsInterface /&gt;
                 &lt;/And&gt;
             &lt;/Entry.Match&gt;
-
-            &lt;Entry.SortBy&gt;
-                &lt;ImplementsInterface Immediate="true" /&gt;
-            &lt;/Entry.SortBy&gt;
         &lt;/Entry&gt;
 
         &lt;Entry DisplayName="メソッド"&gt;
@@ -137,7 +134,8 @@
 </s:String>
 	<s:String x:Key="/Default/CodeStyle/CSharpFileLayoutPatterns/Pattern/@EntryValue">&lt;Patterns xmlns="urn:schemas-jetbrains-com:member-reordering-patterns"&gt;
 
-    &lt;!-- メモリ配置が意味を持つ構造体などは並べ替えない（Rider の既定と同じ） --&gt;
+    &lt;!-- メモリ配置を明示した構造体・COM インターフェース・[NoReorder] の型は並べ替えない --&gt;
+    &lt;!-- 通常の構造体は並べ替えるが、インスタンスフィールドは書いた順を保つため、メモリ配置は変わらない --&gt;
     &lt;TypePattern DisplayName="Non-reorderable types"&gt;
         &lt;TypePattern.Match&gt;
             &lt;Or&gt;
@@ -148,14 +146,20 @@
                         &lt;HasAttribute Name="System.Runtime.InteropServices.ComImport" /&gt;
                     &lt;/Or&gt;
                 &lt;/And&gt;
-                &lt;Kind Is="Struct" /&gt;
+                &lt;And&gt;
+                    &lt;Kind Is="Struct" /&gt;
+                    &lt;Or&gt;
+                        &lt;HasAttribute Name="System.Runtime.InteropServices.StructLayoutAttribute" /&gt;
+                        &lt;HasAttribute Name="System.Runtime.InteropServices.StructLayout" /&gt;
+                    &lt;/Or&gt;
+                &lt;/And&gt;
                 &lt;HasAttribute Name="JetBrains.Annotations.NoReorderAttribute" /&gt;
                 &lt;HasAttribute Name="JetBrains.Annotations.NoReorder" /&gt;
             &lt;/Or&gt;
         &lt;/TypePattern.Match&gt;
     &lt;/TypePattern&gt;
 
-    &lt;!-- Unity のシリアライズ対象ではない通常の C# クラスに適用する --&gt;
+    &lt;!-- Unity のシリアライズ対象ではない通常の C# のクラス・構造体に適用する --&gt;
     &lt;TypePattern DisplayName="Default Pattern"&gt;
         &lt;Entry DisplayName="定数"&gt;
             &lt;Entry.Match&gt;
@@ -201,6 +205,16 @@
             &lt;/Entry.Match&gt;
         &lt;/Entry&gt;
 
+        &lt;Entry DisplayName="コンストラクタ"&gt;
+            &lt;Entry.Match&gt;
+                &lt;Kind Is="Constructor" /&gt;
+            &lt;/Entry.Match&gt;
+
+            &lt;Entry.SortBy&gt;
+                &lt;Static /&gt;
+            &lt;/Entry.SortBy&gt;
+        &lt;/Entry&gt;
+
         &lt;Entry DisplayName="イベント"&gt;
             &lt;Entry.Match&gt;
                 &lt;Kind Is="Event" /&gt;
@@ -224,16 +238,7 @@
             &lt;/Entry.SortBy&gt;
         &lt;/Entry&gt;
 
-        &lt;Entry DisplayName="コンストラクタ"&gt;
-            &lt;Entry.Match&gt;
-                &lt;Kind Is="Constructor" /&gt;
-            &lt;/Entry.Match&gt;
-
-            &lt;Entry.SortBy&gt;
-                &lt;Static /&gt;
-            &lt;/Entry.SortBy&gt;
-        &lt;/Entry&gt;
-
+        &lt;!-- インターフェース名の順では意味のまとまりが崩れるため、並べ替えない（書いた順を保つ） --&gt;
         &lt;Entry DisplayName="インターフェースの実装"&gt;
             &lt;Entry.Match&gt;
                 &lt;And&gt;
@@ -241,10 +246,6 @@
                     &lt;ImplementsInterface /&gt;
                 &lt;/And&gt;
             &lt;/Entry.Match&gt;
-
-            &lt;Entry.SortBy&gt;
-                &lt;ImplementsInterface Immediate="true" /&gt;
-            &lt;/Entry.SortBy&gt;
         &lt;/Entry&gt;
 
         &lt;Entry DisplayName="メソッド"&gt;

@@ -23,7 +23,7 @@ namespace Kumiko
         [SerializeField] private float _maxValue = 1f;
         [SerializeField] private bool _wholeNumbers;
         [SerializeField] private float _value;
-        [SerializeField, Min(0f)] private float _stepSize = 0.1f;
+        [SerializeField] [Min(0f)] private float _stepSize = 0.1f;
 
 
         private DrivenRectTransformTracker _tracker = new();
@@ -113,6 +113,35 @@ namespace Kumiko
         }
 
 
+#if UNITY_EDITOR
+
+
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+
+            if (_wholeNumbers)
+            {
+                _minValue = Mathf.Round(_minValue);
+                _maxValue = Mathf.Round(_maxValue);
+            }
+
+            _value = ClampValue(_value);
+
+            if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this))
+            {
+                return;
+            }
+
+            // OnValidate中にほかのオブジェクトを変更すると警告が出るため、次のエディター更新で反映する。
+            UnityEditor.EditorApplication.delayCall -= UpdateVisualsDelayed;
+            UnityEditor.EditorApplication.delayCall += UpdateVisualsDelayed;
+        }
+
+
+#endif
+
+
         public void OnInitializePotentialDrag(PointerEventData eventData)
         {
             // 押した直後から値をポインタに追従させるため、ドラッグ開始のしきい値を使わない。
@@ -122,7 +151,10 @@ namespace Kumiko
 
         public void OnDrag(PointerEventData eventData)
         {
-            if (!CanDrag(eventData)) return;
+            if (!CanDrag(eventData))
+            {
+                return;
+            }
 
             UpdateValueFromPointer(eventData);
         }
@@ -152,7 +184,10 @@ namespace Kumiko
             SlideDirection previousDirection = _direction;
             _direction = direction;
 
-            if (flipsLayout) ((RectTransform)transform).FlipLayout(previousDirection, direction);
+            if (flipsLayout)
+            {
+                ((RectTransform)transform).FlipLayout(previousDirection, direction);
+            }
 
             UpdateVisuals();
         }
@@ -174,7 +209,8 @@ namespace Kumiko
             Camera eventCamera = eventData.pressEventCamera;
 
             // つまみを押した場合は値を飛ばさず、押した位置とつまみの基準点のずれを保ってドラッグさせる。
-            if (_handleRect.TryGetParentArea(transform, out _) && _handleRect.ContainsScreenPosition(pressPosition, eventCamera))
+            if (_handleRect.TryGetParentArea(transform, out _)
+                && _handleRect.ContainsScreenPosition(pressPosition, eventCamera))
             {
                 if (_handleRect.TryGetLocalPosition(pressPosition, eventCamera, out Vector2 localPosition))
                 {
@@ -214,9 +250,15 @@ namespace Kumiko
             int axis = _direction.GetAxisIndex();
             float areaLength = area.rect.size[axis];
 
-            if (areaLength <= 0f) return;
+            if (areaLength <= 0f)
+            {
+                return;
+            }
 
-            if (!area.TryGetLocalPosition(eventData.position, eventData.pressEventCamera, out Vector2 localPosition)) return;
+            if (!area.TryGetLocalPosition(eventData.position, eventData.pressEventCamera, out Vector2 localPosition))
+            {
+                return;
+            }
 
             // 範囲の開始端からの位置を、範囲の長さに対する割合にする。
             float ratio = Mathf.Clamp01((localPosition - area.rect.position - _dragOffset)[axis] / areaLength);
@@ -228,12 +270,18 @@ namespace Kumiko
         {
             float clampedValue = ClampValue(value);
 
-            if (Mathf.Approximately(_value, clampedValue)) return;
+            if (Mathf.Approximately(_value, clampedValue))
+            {
+                return;
+            }
 
             _value = clampedValue;
             UpdateVisuals();
 
-            if (notify) ValueChanged?.Invoke(_value);
+            if (notify)
+            {
+                ValueChanged?.Invoke(_value);
+            }
         }
 
 
@@ -296,33 +344,18 @@ namespace Kumiko
 
 #if UNITY_EDITOR
 
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-
-            if (_wholeNumbers)
-            {
-                _minValue = Mathf.Round(_minValue);
-                _maxValue = Mathf.Round(_maxValue);
-            }
-
-            _value = ClampValue(_value);
-
-            if (UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this)) return;
-
-            // OnValidate中にほかのオブジェクトを変更すると警告が出るため、次のエディター更新で反映する。
-            UnityEditor.EditorApplication.delayCall -= UpdateVisualsDelayed;
-            UnityEditor.EditorApplication.delayCall += UpdateVisualsDelayed;
-        }
-
 
         private void UpdateVisualsDelayed()
         {
             // 呼ばれるまでの間に、破棄されている場合がある。
-            if (this == null) return;
+            if (this == null)
+            {
+                return;
+            }
 
             UpdateVisuals();
         }
+
 
 #endif
     }

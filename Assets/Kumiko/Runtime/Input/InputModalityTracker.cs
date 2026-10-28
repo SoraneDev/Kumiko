@@ -40,14 +40,6 @@ namespace Kumiko
         public InputModality Modality { get; private set; }
 
 
-        // Unityのドメインリロードを無効にしている場合、静的変数がリセットされないため、明示的にリセットする。
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        private static void ResetStatics()
-        {
-            Current = new InputModalityTracker();
-        }
-
-
         /// <summary>
         /// 入力種別を固定する。
         /// </summary>
@@ -81,6 +73,14 @@ namespace Kumiko
         }
 
 
+        // Unityのドメインリロードを無効にしている場合、静的変数がリセットされないため、明示的にリセットする。
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+        private static void ResetStatics()
+        {
+            Current = new InputModalityTracker();
+        }
+
+
         private void Refresh()
         {
             InputModality next = _locked ?? _detected;
@@ -90,7 +90,10 @@ namespace Kumiko
 
         private void SetModality(InputModality next)
         {
-            if (Modality == next) return;
+            if (Modality == next)
+            {
+                return;
+            }
 
             Modality = next;
 

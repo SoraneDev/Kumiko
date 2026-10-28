@@ -69,8 +69,6 @@ namespace Kumiko
         }
 
 
-        #region UnityLifecycleEvents
-
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -122,17 +120,36 @@ namespace Kumiko
 
         private void OnApplicationFocus(bool hasFocus)
         {
-            if (hasFocus) return;
+            if (hasFocus)
+            {
+                return;
+            }
 
             // アプリケーションのフォーカスを失うとPointerUpが呼ばれないため、押下を解除する。
             _flags = _flags.Remove(InteractionFlags.Pressed);
             RefreshState();
         }
 
-        #endregion
+
+#if UNITY_EDITOR
 
 
-        #region PointerEvents
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+
+            if (!Application.isPlaying)
+            {
+                return;
+            }
+
+            SyncDisabledFlag();
+            DeselectIfDisabled();
+        }
+
+
+#endif
+
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -158,11 +175,16 @@ namespace Kumiko
         {
             InputModalityTracker.Current.Report(PointerKindClassifier.Classify(eventData));
 
-            if (eventData.button != PointerEventData.InputButton.Left) return;
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
 
             // クリックまたはタップした要素へ選択を移す。
             // 後でゲームパッドに切り替えたときに、最後に触れた要素から操作を始められるようにするため。
-            if (IsInteractable() && EventSystem.current != null && EventSystem.current.currentSelectedGameObject != gameObject)
+            if (IsInteractable()
+                && EventSystem.current != null
+                && EventSystem.current.currentSelectedGameObject != gameObject)
             {
                 EventSystem.current.SetSelectedGameObject(gameObject);
             }
@@ -170,7 +192,10 @@ namespace Kumiko
             _flags = _flags.Add(InteractionFlags.Pressed);
             RefreshState();
 
-            if (!IsInteractable()) return;
+            if (!IsInteractable())
+            {
+                return;
+            }
 
             OnPointerDownInput(eventData);
         }
@@ -178,7 +203,10 @@ namespace Kumiko
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left) return;
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
 
             _flags = _flags.Remove(InteractionFlags.Pressed);
             RefreshState();
@@ -187,17 +215,19 @@ namespace Kumiko
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (eventData.button != PointerEventData.InputButton.Left) return;
+            if (eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
 
-            if (!IsInteractable()) return;
+            if (!IsInteractable())
+            {
+                return;
+            }
 
             OnConfirmInput();
         }
 
-        #endregion
-
-
-        #region SelectionEvents
 
         public void OnSelect(BaseEventData eventData)
         {
@@ -212,10 +242,6 @@ namespace Kumiko
             RefreshState();
         }
 
-        #endregion
-
-
-        #region NavigationEvents
 
         public void OnSubmit(BaseEventData eventData)
         {
@@ -235,7 +261,10 @@ namespace Kumiko
                 RefreshState();
             }
 
-            if (!IsInteractable()) return;
+            if (!IsInteractable())
+            {
+                return;
+            }
 
             OnConfirmInput();
         }
@@ -251,13 +280,18 @@ namespace Kumiko
         {
             InputModalityTracker.Current.Report(InputModality.Navigation);
 
-            if (!IsInteractable()) return;
-            if (!UsesMoveInput(eventData.moveDir)) return;
+            if (!IsInteractable())
+            {
+                return;
+            }
+
+            if (!UsesMoveInput(eventData.moveDir))
+            {
+                return;
+            }
 
             OnMoveInput(eventData.moveDir);
         }
-
-        #endregion
 
 
         /// <summary>
@@ -339,7 +373,10 @@ namespace Kumiko
 
         private void SetState(InteractionState next)
         {
-            if (State == next) return;
+            if (State == next)
+            {
+                return;
+            }
 
             State = next;
 
@@ -358,8 +395,15 @@ namespace Kumiko
         private void DeselectIfDisabled()
         {
             // 選択中の要素が操作不可能になったら、選択を外す。
-            if (IsInteractable()) return;
-            if (EventSystem.current == null || EventSystem.current.currentSelectedGameObject != gameObject) return;
+            if (IsInteractable())
+            {
+                return;
+            }
+
+            if (EventSystem.current == null || EventSystem.current.currentSelectedGameObject != gameObject)
+            {
+                return;
+            }
 
             EventSystem.current.SetSelectedGameObject(null);
         }
@@ -375,12 +419,18 @@ namespace Kumiko
                 current.GetComponents(_canvasGroupBuffer);
                 foreach (CanvasGroup canvasGroup in _canvasGroupBuffer)
                 {
-                    if (canvasGroup.enabled && !canvasGroup.interactable) return false;
+                    if (canvasGroup.enabled && !canvasGroup.interactable)
+                    {
+                        return false;
+                    }
 
                     // ignoreParentGroupsが有効なCanvasGroupで探索を止める。
                     // ignoreParentGroupsはenabledの状態に関わらずチェックする。
                     // Unity標準のSelectableと同じ判定方法にしている。
-                    if (canvasGroup.ignoreParentGroups) return true;
+                    if (canvasGroup.ignoreParentGroups)
+                    {
+                        return true;
+                    }
                 }
 
                 current = current.parent;
@@ -388,20 +438,5 @@ namespace Kumiko
 
             return true;
         }
-
-
-#if UNITY_EDITOR
-
-        protected override void OnValidate()
-        {
-            base.OnValidate();
-
-            if (!Application.isPlaying) return;
-
-            SyncDisabledFlag();
-            DeselectIfDisabled();
-        }
-
-#endif
     }
 }

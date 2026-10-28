@@ -40,13 +40,19 @@ namespace Kumiko
             {
                 _ownResults[i] = _gates[i].IsActive() ? _gates[i].Evaluate() : ConfirmGateResult.Passed;
 
-                if (finalResult == ConfirmGateResult.Passed) finalResult = _ownResults[i];
+                if (finalResult == ConfirmGateResult.Passed)
+                {
+                    finalResult = _ownResults[i];
+                }
             }
 
             // 確定：最終結果が決まってから、各Gateに状態を更新させる。
             for (int i = 0; i < _gates.Length; i++)
             {
-                if (_gates[i].IsActive()) _gates[i].Commit(_ownResults[i], finalResult);
+                if (_gates[i].IsActive())
+                {
+                    _gates[i].Commit(_ownResults[i], finalResult);
+                }
             }
 
             return finalResult;
@@ -58,7 +64,10 @@ namespace Kumiko
         /// </summary>
         internal void ResetAll()
         {
-            foreach (IConfirmGate gate in _gates) gate.ResetState();
+            foreach (IConfirmGate gate in _gates)
+            {
+                gate.ResetState();
+            }
         }
     }
 }
